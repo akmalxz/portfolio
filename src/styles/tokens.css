@@ -1,0 +1,261 @@
+:root {
+  color-scheme: light dark;
+  --color-scheme: light;
+
+  /* Raw light / dark token pairs */
+  --bg-canvas-light: #dce3ee;
+  --bg-canvas-dark: #090d16;
+
+  --bg-stage-light: #cdd6e5;
+  --bg-stage-dark: #0e1422;
+
+  --bg-card-light: #ffffff;
+  --bg-card-dark: #151e30;
+
+  --bg-pill-light: #eef2f8;
+  --bg-pill-dark: #1b263b;
+
+  --ink-primary-light: #0f172a;
+  --ink-primary-dark: #f1f5f9;
+
+  --ink-secondary-light: #475569;
+  --ink-secondary-dark: #94a3b8;
+
+  --border-subtle-light: #bcc7da;
+  --border-subtle-dark: #27344a;
+
+  --border-strong-light: #64748b;
+  --border-strong-dark: #64748b;
+
+  --accent-light: #2563eb;
+  --accent-dark: #60a5fa;
+
+  --wall-left-light: #edf1f8;
+  --wall-left-dark: #1a2336;
+
+  --wall-right-light: #dce4f0;
+  --wall-right-dark: #131b2b;
+
+  --wall-cap-light: #ffffff;
+  --wall-cap-dark: #2c3a52;
+
+  --floor-top-light: #d3ddeb;
+  --floor-top-dark: #182234;
+
+  --floor-front-light: #a6b4ca;
+  --floor-front-dark: #0b101b;
+
+  --floor-left-light: #bac7db;
+  --floor-left-dark: #111827;
+
+  --rug-top-light: #c7d2fe;
+  --rug-top-dark: #312e81;
+
+  --rug-ring-light: #a5b4fc;
+  --rug-ring-dark: #4338ca;
+
+  --white-top-light: #ffffff;
+  --white-top-dark: #334155;
+
+  --white-left-light: #e2e8f0;
+  --white-left-dark: #263244;
+
+  --white-front-light: #cbd5e1;
+  --white-front-dark: #1e293b;
+
+  --slate-top-light: #64748b;
+  --slate-top-dark: #475569;
+
+  --slate-left-light: #475569;
+  --slate-left-dark: #334155;
+
+  --slate-front-light: #334155;
+  --slate-front-dark: #1e293b;
+
+  --desk-top-light: #f8fafc;
+  --desk-top-dark: #27344a;
+
+  --desk-left-light: #cbd5e1;
+  --desk-left-dark: #1e293b;
+
+  --desk-front-light: #94a3b8;
+  --desk-front-dark: #0f172a;
+
+  --bed-blanket-top-light: #6366f1;
+  --bed-blanket-top-dark: #4f46e5;
+
+  --bed-blanket-left-light: #4f46e5;
+  --bed-blanket-left-dark: #4338ca;
+
+  --bed-blanket-front-light: #4338ca;
+  --bed-blanket-front-dark: #3730a3;
+
+  --window-sky-top-light: #93c5fd;
+  --window-sky-top-dark: #0b1329;
+
+  --window-sky-bottom-light: #e0f2fe;
+  --window-sky-bottom-dark: #1e3a5f;
+
+  --curtain-light: #475569;
+  --curtain-dark: #1e293b;
+
+  --lamp-glow-light: #f8fafc;
+  --lamp-glow-dark: #bae6fd;
+
+  --shadow-ao-light: rgb(15 23 42 / 0.16);
+  --shadow-ao-dark: rgb(0 0 0 / 0.42);
+
+  --ambient-orb-1-light: #93c5fd;
+  --ambient-orb-1-dark: #1e3a8a;
+
+  --ambient-orb-2-light: #c7d2fe;
+  --ambient-orb-2-dark: #312e81;
+
+  --ambient-orb-3-light: #a7f3d0;
+  --ambient-orb-3-dark: #0f4c5c;
+
+  /* Fallback assignments (light default) */
+  --bg-canvas: var(--bg-canvas-light);
+  --bg-stage: var(--bg-stage-light);
+  --bg-card: var(--bg-card-light);
+  --bg-pill: var(--bg-pill-light);
+  --ink-primary: var(--ink-primary-light);
+  --ink-secondary: var(--ink-secondary-light);
+  --border-subtle: var(--border-subtle-light);
+  --border-strong: var(--border-strong-light);
+  --accent: var(--accent-light);
+  --focus-ring: var(--accent-light);
+  --wall-left-bg: var(--wall-left-light);
+  --wall-right-bg: var(--wall-right-light);
+  --wall-trim: var(--wall-cap-light);
+  --floor-top: var(--floor-top-light);
+  --floor-front: var(--floor-front-light);
+  --floor-left: var(--floor-left-light);
+  --rug-top: var(--rug-top-light);
+  --rug-edge: var(--rug-ring-light);
+  --white-top: var(--white-top-light);
+  --white-left: var(--white-left-light);
+  --white-front: var(--white-front-light);
+  --slate-top: var(--slate-top-light);
+  --slate-left: var(--slate-left-light);
+  --slate-front: var(--slate-front-light);
+  --desk-top: var(--desk-top-light);
+  --desk-left: var(--desk-left-light);
+  --desk-front: var(--desk-front-light);
+  --bed-blanket-top: var(--bed-blanket-top-light);
+  --bed-blanket-left: var(--bed-blanket-left-light);
+  --bed-blanket-front: var(--bed-blanket-front-light);
+  --window-sky-top: var(--window-sky-top-light);
+  --window-sky-bottom: var(--window-sky-bottom-light);
+  --curtain-bg: var(--curtain-light);
+  --lamp-glow: var(--lamp-glow-light);
+  --room-shadow: var(--shadow-ao-light);
+  --ambient-orb-1: var(--ambient-orb-1-light);
+  --ambient-orb-2: var(--ambient-orb-2-light);
+  --ambient-orb-3: var(--ambient-orb-3-light);
+
+  --pc-bezel: #0f172a;
+  --pc-screen-bg: #090d16;
+  --pc-screen-ink: #f8fafc;
+  --pc-screen-accent: #38bdf8;
+
+  --font-sans: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-mono: ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+
+  --page-max: 72rem;
+  --radius-sm: 0.25rem;
+  --radius-md: 0.625rem;
+
+  @media (prefers-color-scheme: dark) {
+    --color-scheme: dark;
+    --bg-canvas: var(--bg-canvas-dark);
+    --bg-stage: var(--bg-stage-dark);
+    --bg-card: var(--bg-card-dark);
+    --bg-pill: var(--bg-pill-dark);
+    --ink-primary: var(--ink-primary-dark);
+    --ink-secondary: var(--ink-secondary-dark);
+    --border-subtle: var(--border-subtle-dark);
+    --border-strong: var(--border-strong-dark);
+    --accent: var(--accent-dark);
+    --focus-ring: var(--accent-dark);
+    --wall-left-bg: var(--wall-left-dark);
+    --wall-right-bg: var(--wall-right-dark);
+    --wall-trim: var(--wall-cap-dark);
+    --floor-top: var(--floor-top-dark);
+    --floor-front: var(--floor-front-dark);
+    --floor-left: var(--floor-left-dark);
+    --rug-top: var(--rug-top-dark);
+    --rug-edge: var(--rug-ring-dark);
+    --white-top: var(--white-top-dark);
+    --white-left: var(--white-left-dark);
+    --white-front: var(--white-front-dark);
+    --slate-top: var(--slate-top-dark);
+    --slate-left: var(--slate-left-dark);
+    --slate-front: var(--slate-front-dark);
+    --desk-top: var(--desk-top-dark);
+    --desk-left: var(--desk-left-dark);
+    --desk-front: var(--desk-front-dark);
+    --bed-blanket-top: var(--bed-blanket-top-dark);
+    --bed-blanket-left: var(--bed-blanket-left-dark);
+    --bed-blanket-front: var(--bed-blanket-front-dark);
+    --window-sky-top: var(--window-sky-top-dark);
+    --window-sky-bottom: var(--window-sky-bottom-dark);
+    --curtain-bg: var(--curtain-dark);
+    --lamp-glow: var(--lamp-glow-dark);
+    --room-shadow: var(--shadow-ao-dark);
+    --ambient-orb-1: var(--ambient-orb-1-dark);
+    --ambient-orb-2: var(--ambient-orb-2-dark);
+    --ambient-orb-3: var(--ambient-orb-3-dark);
+  }
+
+  &:has(> head > meta[name='color-scheme'][content='dark']) {
+    color-scheme: dark;
+    --color-scheme: dark;
+  }
+
+  &:has(> head > meta[name='color-scheme'][content='light']) {
+    color-scheme: light;
+    --color-scheme: light;
+  }
+
+  @supports (color: light-dark(white, black)) {
+    --bg-canvas: light-dark(var(--bg-canvas-light), var(--bg-canvas-dark));
+    --bg-stage: light-dark(var(--bg-stage-light), var(--bg-stage-dark));
+    --bg-card: light-dark(var(--bg-card-light), var(--bg-card-dark));
+    --bg-pill: light-dark(var(--bg-pill-light), var(--bg-pill-dark));
+    --ink-primary: light-dark(var(--ink-primary-light), var(--ink-primary-dark));
+    --ink-secondary: light-dark(var(--ink-secondary-light), var(--ink-secondary-dark));
+    --border-subtle: light-dark(var(--border-subtle-light), var(--border-subtle-dark));
+    --border-strong: light-dark(var(--border-strong-light), var(--border-strong-dark));
+    --accent: light-dark(var(--accent-light), var(--accent-dark));
+    --focus-ring: light-dark(var(--accent-light), var(--accent-dark));
+    --wall-left-bg: light-dark(var(--wall-left-light), var(--wall-left-dark));
+    --wall-right-bg: light-dark(var(--wall-right-light), var(--wall-right-dark));
+    --wall-trim: light-dark(var(--wall-cap-light), var(--wall-cap-dark));
+    --floor-top: light-dark(var(--floor-top-light), var(--floor-top-dark));
+    --floor-front: light-dark(var(--floor-front-light), var(--floor-front-dark));
+    --floor-left: light-dark(var(--floor-left-light), var(--floor-left-dark));
+    --rug-top: light-dark(var(--rug-top-light), var(--rug-top-dark));
+    --rug-edge: light-dark(var(--rug-ring-light), var(--rug-ring-dark));
+    --white-top: light-dark(var(--white-top-light), var(--white-top-dark));
+    --white-left: light-dark(var(--white-left-light), var(--white-left-dark));
+    --white-front: light-dark(var(--white-front-light), var(--white-front-dark));
+    --slate-top: light-dark(var(--slate-top-light), var(--slate-top-dark));
+    --slate-left: light-dark(var(--slate-left-light), var(--slate-left-dark));
+    --slate-front: light-dark(var(--slate-front-light), var(--slate-front-dark));
+    --desk-top: light-dark(var(--desk-top-light), var(--desk-top-dark));
+    --desk-left: light-dark(var(--desk-left-light), var(--desk-left-dark));
+    --desk-front: light-dark(var(--desk-front-light), var(--desk-front-dark));
+    --bed-blanket-top: light-dark(var(--bed-blanket-top-light), var(--bed-blanket-top-dark));
+    --bed-blanket-left: light-dark(var(--bed-blanket-left-light), var(--bed-blanket-left-dark));
+    --bed-blanket-front: light-dark(var(--bed-blanket-front-light), var(--bed-blanket-front-dark));
+    --window-sky-top: light-dark(var(--window-sky-top-light), var(--window-sky-top-dark));
+    --window-sky-bottom: light-dark(var(--window-sky-bottom-light), var(--window-sky-bottom-dark));
+    --curtain-bg: light-dark(var(--curtain-light), var(--curtain-dark));
+    --lamp-glow: light-dark(var(--lamp-glow-light), var(--lamp-glow-dark));
+    --room-shadow: light-dark(var(--shadow-ao-light), var(--shadow-ao-dark));
+    --ambient-orb-1: light-dark(var(--ambient-orb-1-light), var(--ambient-orb-1-dark));
+    --ambient-orb-2: light-dark(var(--ambient-orb-2-light), var(--ambient-orb-2-dark));
+    --ambient-orb-3: light-dark(var(--ambient-orb-3-light), var(--ambient-orb-3-dark));
+  }
+}
