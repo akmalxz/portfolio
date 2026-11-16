@@ -4,6 +4,7 @@ interface ModalDialogProps {
   open: boolean;
   labelledBy: string;
   onClose: () => void;
+  className?: string;
   children: ReactNode;
 }
 
@@ -21,6 +22,7 @@ export function ModalDialog({
   open,
   labelledBy,
   onClose,
+  className,
   children,
 }: ModalDialogProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
@@ -80,7 +82,7 @@ export function ModalDialog({
   return (
     <dialog
       ref={dialogRef}
-      className="room-dialog"
+      className={className ? `room-dialog ${className}` : 'room-dialog'}
       aria-labelledby={labelledBy}
       {...({ closedby: 'any' } as Record<string, string>)}
     >

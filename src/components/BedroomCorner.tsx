@@ -1,10 +1,43 @@
-import { useState } from 'react';
+import { useState, type MouseEvent } from 'react';
 import type { ProfileData } from '../data/profile';
 import type { BookEntry } from '../types/library';
 import { DeskSetup } from './DeskSetup';
 import { IsoBox } from './IsoBox';
 import type { RoomSectionTab } from './PcModal';
-import { RoomCharacter } from './RoomCharacter';
+import { RoomCharacter, type WalkTarget } from './RoomCharacter';
+
+function clampToWalkableFloor(rawX: number, rawY: number) {
+  let x = Math.max(28, Math.min(512, Math.round(rawX)));
+  let y = Math.max(28, Math.min(352, Math.round(rawY)));
+
+  // Nudge clear of Desk + Chair zone (x: 0..205, y: 0..115)
+  if (x < 205 && y < 115) {
+    y = 124;
+  }
+  // Nudge clear of Edge NAS server box (x: 210..290, y: 0..72)
+  if (x >= 210 && x <= 290 && y < 72) {
+    y = 78;
+  }
+  // Nudge clear of Rectangular Holotable (x: 114..272, y: 218..308)
+  if (x >= 114 && x <= 272 && y >= 218 && y <= 308) {
+    const distRight = Math.abs(276 - x);
+    const distTop = Math.abs(y - 212);
+    const distBot = Math.abs(314 - y);
+    if (distRight <= distTop && distRight <= distBot) {
+      x = 278;
+    } else if (distTop <= distBot) {
+      y = 210;
+    } else {
+      y = 316;
+    }
+  }
+  // Nudge clear of Server Plinth along back-right wall (x >= 440, y >= 44)
+  if (x >= 440 && y >= 44) {
+    x = 434;
+  }
+
+  return { x, y };
+}
 
 interface BedroomCornerProps {
   profile: ProfileData;
@@ -30,6 +63,15 @@ export function BedroomCorner({
   const [hoveredBookId, setHoveredBookId] = useState<string | null>(null);
   const [hoveredPc, setHoveredPc] = useState(false);
   const [hoveredCallout, setHoveredCallout] = useState<CalloutKey | null>(null);
+  const [walkTarget, setWalkTarget] = useState<WalkTarget | null>(null);
+
+  const handleFloorClick = (event: MouseEvent<HTMLDivElement>) => {
+    const { x, y } = clampToWalkableFloor(
+      event.nativeEvent.offsetX,
+      event.nativeEvent.offsetY,
+    );
+    setWalkTarget((prev) => ({ x, y, seq: (prev?.seq ?? 0) + 1 }));
+  };
 
   const projectBooks = books.filter((b) => b.category === 'project');
   const experienceBooks = books.filter((b) => b.category === 'experience');
@@ -133,6 +175,20 @@ export function BedroomCorner({
               h={16}
               className="box-floor-slab"
             />
+            {/* Clickable Floor Plane for Click-to-Move Character */}
+            <div
+              className="iso-floor-clickplane"
+              onClick={handleFloorClick}
+              aria-hidden="true"
+            />
+            {walkTarget && (
+              <div
+                key={walkTarget.seq}
+                className="walk-target-ring"
+                style={{ left: `${walkTarget.x}px`, top: `${walkTarget.y}px` }}
+                aria-hidden="true"
+              />
+            )}
 
             {/* Solid 3D Extruded Cutaway Wall Slabs (14px thick) */}
             <IsoBox
@@ -558,7 +614,7 @@ export function BedroomCorner({
             />
 
             {/* Animated Isometric Character */}
-            <RoomCharacter />
+            <RoomCharacter walkTarget={walkTarget} />
           </div>
 
           {/* Callout Labels Positioned Just Outside/Along Room Boundary */}
