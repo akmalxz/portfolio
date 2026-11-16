@@ -11,104 +11,86 @@ interface BookModalProps {
 
 function EntryDetailCanvas({ entry }: { entry: BookEntry }) {
   return (
-    <div className="workbench-detail" data-tone={entry.tone}>
-      <div className="workbench-hero">
-        <div className="workbench-hero-meta">
-          <span className="workbench-code-pill">{entry.callNumber}</span>
-          <span className="workbench-period-pill">{entry.period}</span>
-        </div>
-        <h3 className="workbench-title">{entry.title}</h3>
-        <p className="workbench-subtitle">{entry.subtitle}</p>
-        <p className="workbench-summary">{entry.summary}</p>
-      </div>
+    <article className="workbench-detail case-study">
+      <header className="case-hero">
+        <p className="case-meta">
+          <span>{entry.period}</span>
+          <span aria-hidden="true">·</span>
+          <span>{entry.subtitle}</span>
+        </p>
+        <h3 className="case-title">{entry.title}</h3>
+        <p className="case-summary">{entry.summary}</p>
+      </header>
 
       {entry.metrics && entry.metrics.length > 0 && (
-        <ul className="entry-metrics workbench-metrics" role="list" aria-label="Key impact">
+        <ul className="case-metrics" role="list" aria-label="Key impact">
           {entry.metrics.map((metric) => (
-            <li key={metric.label} className="entry-metric">
-              <span className="metric-value">{metric.value}</span>
-              <span className="metric-label">{metric.label}</span>
+            <li key={metric.label} className="case-metric">
+              <span className="case-metric-value">{metric.value}</span>
+              <span className="case-metric-label">{metric.label}</span>
             </li>
           ))}
         </ul>
       )}
 
       {entry.pipeline && entry.pipeline.length > 0 && (
-        <div className="entry-arch-block">
-          <h4 className="dialog-subheading">System Architecture Pipeline</h4>
-          <ol
-            className="entry-pipeline"
-            role="list"
-            aria-label="System architecture pipeline"
-          >
+        <section className="case-section" aria-label="Architecture flow">
+          <h4 className="case-section-title">Architecture</h4>
+          <ol className="case-pipeline" role="list">
             {entry.pipeline.map((node, index) => (
-              <li key={node.stage} className="pipeline-step">
-                <div className="pipeline-node">
-                  <span className="pipeline-index">0{index + 1}</span>
-                  <span className="pipeline-stage">{node.stage}</span>
-                  <span className="pipeline-detail">{node.detail}</span>
-                </div>
-                {index < entry.pipeline!.length - 1 && (
-                  <span className="pipeline-arrow" aria-hidden="true">
-                    →
-                  </span>
-                )}
+              <li key={node.stage} className="case-pipeline-step">
+                <span className="case-pipeline-dot" aria-hidden="true" />
+                <span className="case-pipeline-num">0{index + 1}</span>
+                <span className="case-pipeline-stage">{node.stage}</span>
+                <span className="case-pipeline-detail">{node.detail}</span>
               </li>
             ))}
           </ol>
-        </div>
+        </section>
       )}
 
-      <div className="workbench-lower-grid">
-        {entry.tradeoff && (
-          <div
-            className="workbench-tradeoff-col"
-            role="group"
-            aria-label="Engineering challenge and fix"
-          >
-            <h4 className="dialog-subheading">Challenge &amp; Fix</h4>
-            <div className="entry-tradeoff is-stacked">
-              <div className="tradeoff-col is-bottleneck">
-                <span className="tradeoff-badge is-bottleneck">Bottleneck</span>
-                <p className="tradeoff-text">{entry.tradeoff.bottleneck}</p>
-              </div>
-              <div className="tradeoff-col is-decision">
-                <span className="tradeoff-badge is-decision">Engineering Fix</span>
-                <p className="tradeoff-text">{entry.tradeoff.decision}</p>
-              </div>
+      {entry.tradeoff && (
+        <section className="case-section" aria-label="Challenge and solution">
+          <div className="case-tradeoff">
+            <div className="case-tradeoff-item">
+              <h4 className="case-section-title">Challenge</h4>
+              <p className="case-prose">{entry.tradeoff.bottleneck}</p>
+            </div>
+            <div className="case-tradeoff-item is-solution">
+              <h4 className="case-section-title">Approach</h4>
+              <p className="case-prose">{entry.tradeoff.decision}</p>
             </div>
           </div>
-        )}
+        </section>
+      )}
 
-        <div className="workbench-highlights-col">
-          <h4 className="dialog-subheading">Highlights</h4>
-          <ul className="dialog-highlights">
-            {entry.highlights.map((item, index) => (
-              <li key={index}>{item}</li>
-            ))}
-          </ul>
+      <section className="case-section" aria-label="Key outcomes and stack">
+        <h4 className="case-section-title">Key Details</h4>
+        <ul className="case-highlights">
+          {entry.highlights.map((item, index) => (
+            <li key={index}>{item}</li>
+          ))}
+        </ul>
 
-          <h4 className="dialog-subheading">Stack &amp; Methods</h4>
-          <ul className="dialog-tags" role="list">
-            {entry.tags.map((tag) => (
-              <li key={tag} className="dialog-tag">
-                {tag}
+        <ul className="case-tags" role="list" aria-label="Technologies used">
+          {entry.tags.map((tag) => (
+            <li key={tag} className="case-tag">
+              {tag}
+            </li>
+          ))}
+        </ul>
+
+        {entry.links && entry.links.length > 0 && (
+          <ul className="dialog-links" role="list">
+            {entry.links.map((link) => (
+              <li key={link.label}>
+                <a href={link.href}>{link.label}</a>
               </li>
             ))}
           </ul>
-
-          {entry.links && entry.links.length > 0 && (
-            <ul className="dialog-links" role="list">
-              {entry.links.map((link) => (
-                <li key={link.label}>
-                  <a href={link.href}>{link.label}</a>
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
-      </div>
-    </div>
+        )}
+      </section>
+    </article>
   );
 }
 
@@ -124,31 +106,21 @@ function ProjectWorkbench({ focus, entries }: { focus: BookEntry; entries: BookE
 
   return (
     <div className="project-workbench">
-      {/* Left Sidebar: 1-Click Project Selector */}
+      {/* Left Editorial Index: Clean Borderless Project List */}
       <nav className="workbench-sidebar" aria-label="Key projects">
         <ul className="workbench-list" role="list">
           {entries.map((entry) => {
             const isSelected = entry.id === activeEntry.id;
-            const heroMetric = entry.metrics?.[0];
             return (
               <li key={entry.id}>
                 <button
                   type="button"
                   className={`workbench-item ${isSelected ? 'is-selected' : ''}`}
-                  data-tone={entry.tone}
                   aria-current={isSelected ? 'true' : undefined}
                   onClick={() => setSelectedId(entry.id)}
                 >
-                  <span className="workbench-item-top">
-                    <span className="workbench-item-code">{entry.callNumber}</span>
-                    <span className="workbench-item-period">{entry.period}</span>
-                  </span>
                   <span className="workbench-item-title">{entry.title}</span>
-                  {heroMetric && (
-                    <span className="workbench-item-kpi">
-                      <strong>{heroMetric.value}</strong> {heroMetric.label}
-                    </span>
-                  )}
+                  <span className="workbench-item-period">{entry.period}</span>
                 </button>
               </li>
             );
@@ -156,7 +128,7 @@ function ProjectWorkbench({ focus, entries }: { focus: BookEntry; entries: BookE
         </ul>
       </nav>
 
-      {/* Right Detail Canvas: Case Study Breakdown */}
+      {/* Right Detail Canvas: Editorial Case Study */}
       <EntryDetailCanvas entry={activeEntry} />
     </div>
   );
@@ -182,7 +154,7 @@ function ExperienceWorkbench({ focus, entries }: { focus: BookEntry; entries: Bo
 
   return (
     <div className="experience-workbench">
-      {/* Big Interactive Career Timeline */}
+      {/* Clean Horizontal Career Timeline */}
       <nav className="exp-timeline-bar" aria-label="Work experience timeline">
         <div className="exp-timeline-rail" aria-hidden="true">
           <div
@@ -199,13 +171,11 @@ function ExperienceWorkbench({ focus, entries }: { focus: BookEntry; entries: Bo
           {chronological.map((entry, idx) => {
             const isSelected = entry.id === activeEntry.id;
             const isPassed = idx <= activeIndex;
-            const heroMetric = entry.metrics?.[0];
             return (
               <li key={entry.id} className="exp-timeline-step">
                 <button
                   type="button"
                   className={`exp-timeline-node ${isSelected ? 'is-selected' : ''} ${isPassed ? 'is-passed' : ''}`}
-                  data-tone={entry.tone}
                   aria-current={isSelected ? 'true' : undefined}
                   onClick={() => setSelectedId(entry.id)}
                 >
@@ -213,15 +183,9 @@ function ExperienceWorkbench({ focus, entries }: { focus: BookEntry; entries: Bo
                     <span className="exp-node-core" />
                   </span>
                   <span className="exp-node-card">
-                    <span className="exp-role-top">
-                      <span className="exp-role-code">{entry.callNumber}</span>
-                      <span className="exp-role-period">{entry.period}</span>
-                    </span>
+                    <span className="exp-role-period">{entry.period}</span>
                     <span className="exp-role-title">{entry.title}</span>
-                    <span className="exp-role-sub">
-                      {entry.subtitle}
-                      {heroMetric ? ` · ${heroMetric.value} ${heroMetric.label}` : ''}
-                    </span>
+                    <span className="exp-role-sub">{entry.subtitle}</span>
                   </span>
                 </button>
               </li>
@@ -257,7 +221,7 @@ export function BookModal({ book, books, onClose }: BookModalProps) {
       {book && (
         <DialogFrame
           titleId={titleId}
-          eyebrow={isProject ? 'Pipeline Telemetry · Key Projects' : 'Production Clusters · Experience'}
+          eyebrow={isProject ? 'Selected Work' : 'Career History'}
           title={isProject ? 'Key Projects' : 'Work Experience'}
           summary={summary}
         >

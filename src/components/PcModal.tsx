@@ -78,17 +78,17 @@ export function PcModal({ activeTab, profile, onClose }: PcModalProps) {
       summary: profile.role,
     },
     education: {
-      eyebrow: 'Wall frame',
+      eyebrow: 'Server 01',
       title: 'Education',
       summary: `${profile.education.length} degrees · ${profile.education[0]?.institution ?? ''}`,
     },
     publications: {
-      eyebrow: 'Coffee table',
+      eyebrow: 'Holotable',
       title: 'Research Publications',
       summary: `${profile.publications.length} peer-reviewed papers · ${journals} journal, ${conferences} conference`,
     },
     contact: {
-      eyebrow: 'Nightstand',
+      eyebrow: 'Server 04',
       title: 'Contact & References',
       summary: 'Open to data engineering and AI roles — reach out directly.',
     },

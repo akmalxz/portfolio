@@ -79,54 +79,52 @@ function getWalkMetrics(from: RoomPoint, to: RoomPoint, currentYaw: number) {
   return { durationMs, yawDeg };
 }
 
+function CharBox(props: React.ComponentProps<typeof IsoBox>) {
+  return <IsoBox allFaces {...props} />;
+}
+
 function CharacterHead({
   baseZ = 80,
-  faceDirection = 'front',
   children,
 }: {
   baseZ?: number;
-  faceDirection?: 'front' | 'back';
   children?: React.ReactNode;
 }) {
-  const faceContent = (
-    <div className="char-face-features" aria-hidden="true">
-      <span className="char-eye" />
-      <span className="char-eye" />
-    </div>
-  );
-
   return (
     <>
-      {/* Neck connecting shoulders to head (prevents floating head gap) */}
-      <IsoBox x={-3} y={-3} z={baseZ - 4} w={6} d={6} h={5} className="box-char-skin" />
-      {/* Head + minimalist glasses/eyes on the facing side */}
-      <IsoBox
-        x={-8}
-        y={-8}
+      {/* Neck connecting shoulders to head */}
+      <CharBox x={-3} y={-3} z={baseZ - 4} w={6} d={6} h={5} className="box-char-skin" />
+      {/* Solid 6-sided head + minimalist eyes on the +Y facing side */}
+      <CharBox
+        x={-7}
+        y={-7}
         z={baseZ}
-        w={16}
-        d={15}
+        w={14}
+        d={14}
         h={16}
         className="box-char-skin"
-        frontContent={faceDirection === 'front' ? faceContent : undefined}
+        frontContent={
+          <div className="char-face-features" aria-hidden="true">
+            <span className="char-eye" />
+            <span className="char-eye" />
+          </div>
+        }
       />
-      {/* Clean non-overlapping top & back/side hair */}
-      <IsoBox x={-9} y={-9} z={baseZ + 16} w={18} d={17} h={5} className="box-char-hair" />
-      {faceDirection === 'front' ? (
-        <IsoBox x={-9} y={-10} z={baseZ + 2} w={18} d={2} h={14} className="box-char-hair" />
-      ) : (
-        <IsoBox x={-9} y={7} z={baseZ + 2} w={18} d={3} h={14} className="box-char-hair" />
-      )}
+      {/* Flush top hair cap + full back hair curtain + sideburns */}
+      <CharBox x={-8} y={-9} z={baseZ + 16} w={16} d={17} h={5} className="box-char-hair" />
+      <CharBox x={-8} y={-9} z={baseZ + 3} w={16} d={2} h={13} className="box-char-hair" />
+      <CharBox x={-8} y={-7} z={baseZ + 8} w={1} d={8} h={8} className="box-char-hair" />
+      <CharBox x={7} y={-7} z={baseZ + 8} w={1} d={8} h={8} className="box-char-hair" />
       {children}
     </>
   );
 }
 
-function CharacterTorso({ z = 44, h = 34 }: { z?: number; h?: number }) {
+function CharacterTorso({ z = 44, h = 32 }: { z?: number; h?: number }) {
   return (
     <>
-      {/* Shirt torso with collar accent & engineer ID lanyard */}
-      <IsoBox
+      {/* Hoodie torso with front collar/badge and back hood/hem details */}
+      <CharBox
         x={-12}
         y={-7}
         z={z}
@@ -140,9 +138,28 @@ function CharacterTorso({ z = 44, h = 34 }: { z?: number; h?: number }) {
             <span className="char-badge" />
           </div>
         }
+        backContent={
+          <div className="char-shirt-back-detail" aria-hidden="true">
+            <span className="char-hood-seam" />
+            <span className="char-jacket-hem" />
+          </div>
+        }
       />
+      {/* Folded hoodie collar on upper back */}
+      <CharBox x={-6} y={-9} z={z + h - 5} w={12} d={2} h={5} className="box-char-hood" />
       {/* Waistband/belt separating torso and trousers */}
-      <IsoBox x={-12} y={-7} z={z - 2} w={24} d={14} h={2} className="box-char-belt" />
+      <CharBox x={-12} y={-7} z={z - 2} w={24} d={14} h={2} className="box-char-belt" />
+    </>
+  );
+}
+
+function StandingLegs() {
+  return (
+    <>
+      <CharBox x={-10} y={-4} z={1} w={8} d={11} h={6} className="box-char-shoe" />
+      <CharBox x={-10} y={-4} z={7} w={8} d={8} h={35} className="box-char-pants" />
+      <CharBox x={2} y={-4} z={1} w={8} d={11} h={6} className="box-char-shoe" />
+      <CharBox x={2} y={-4} z={7} w={8} d={8} h={35} className="box-char-pants" />
     </>
   );
 }
@@ -334,70 +351,67 @@ export function RoomCharacter({ walkTarget = null }: RoomCharacterProps) {
           <div className="char-body-bob">
             {/* Forward-pointing shoes (+y bias) & trousers */}
             <div className="char-limb char-limb-left char-leg">
-              <IsoBox x={-10} y={-4} z={0} w={8} d={12} h={6} className="box-char-shoe" />
-              <IsoBox x={-10} y={-4} z={6} w={8} d={9} h={36} className="box-char-pants" />
+              <CharBox x={-10} y={-4} z={1} w={8} d={11} h={6} className="box-char-shoe" />
+              <CharBox x={-10} y={-4} z={7} w={8} d={8} h={35} className="box-char-pants" />
             </div>
             <div className="char-limb char-limb-right char-leg">
-              <IsoBox x={2} y={-4} z={0} w={8} d={12} h={6} className="box-char-shoe" />
-              <IsoBox x={2} y={-4} z={6} w={8} d={9} h={36} className="box-char-pants" />
+              <CharBox x={2} y={-4} z={1} w={8} d={11} h={6} className="box-char-shoe" />
+              <CharBox x={2} y={-4} z={7} w={8} d={8} h={35} className="box-char-pants" />
             </div>
             <CharacterTorso z={44} h={32} />
             <div className="char-limb char-limb-right char-arm">
-              <IsoBox x={-18} y={-4} z={47} w={6} d={9} h={28} className="box-char-shirt" />
-              <IsoBox x={-17} y={-3} z={42} w={5} d={7} h={5} className="box-char-skin" />
+              <CharBox x={-18} y={-4} z={47} w={6} d={8} h={28} className="box-char-shirt" />
+              <CharBox x={-17} y={-3} z={42} w={4} d={6} h={5} className="box-char-skin" />
             </div>
             <div className="char-limb char-limb-left char-arm">
-              <IsoBox x={12} y={-4} z={47} w={6} d={9} h={28} className="box-char-shirt" />
-              <IsoBox x={12} y={-3} z={42} w={5} d={7} h={5} className="box-char-skin" />
+              <CharBox x={12} y={-4} z={47} w={6} d={8} h={28} className="box-char-shirt" />
+              <CharBox x={13} y={-3} z={42} w={4} d={6} h={5} className="box-char-skin" />
             </div>
             <div className="char-limb char-head-idle">
-              <CharacterHead baseZ={80} faceDirection="front" />
+              <CharacterHead baseZ={80} />
             </div>
           </div>
         </div>
       )}
 
       {!isWalking && !isCustomIdle && activity === 'desktop' && (
-        <>
-          <IsoBox x={-12} y={-20} z={37} w={24} d={24} h={9} className="box-char-pants" />
-          <IsoBox x={-10} y={-22} z={8} w={8} d={8} h={29} className="box-char-pants" />
-          <IsoBox x={-10} y={-25} z={3} w={8} d={11} h={5} className="box-char-shoe" />
-          <IsoBox x={2} y={-22} z={8} w={8} d={8} h={29} className="box-char-pants" />
-          <IsoBox x={2} y={-25} z={3} w={8} d={11} h={5} className="box-char-shoe" />
-          {/* Seated torso extended to connect shoulders smoothly to keyboard-height arms */}
-          <CharacterTorso z={48} h={38} />
+        <div className="char-pose-back">
+          <CharBox x={-12} y={-5} z={37} w={24} d={22} h={9} className="box-char-pants" />
+          <CharBox x={-10} y={9} z={7} w={8} d={8} h={30} className="box-char-pants" />
+          <CharBox x={-10} y={9} z={1} w={8} d={11} h={6} className="box-char-shoe" />
+          <CharBox x={2} y={9} z={7} w={8} d={8} h={30} className="box-char-pants" />
+          <CharBox x={2} y={9} z={1} w={8} d={11} h={6} className="box-char-shoe" />
+          {/* Seated torso facing desk monitor (-Y via char-pose-back) */}
+          <CharacterTorso z={48} h={36} />
           <div className="char-limb char-typing-left">
-            <IsoBox x={-16} y={-26} z={80} w={6} d={22} h={7} className="box-char-shirt" />
-            <IsoBox x={-15} y={-31} z={81} w={5} d={6} h={5} className="box-char-skin" />
+            <CharBox x={-17} y={2} z={76} w={6} d={21} h={7} className="box-char-shirt" />
+            <CharBox x={-16} y={23} z={77} w={4} d={5} h={5} className="box-char-skin" />
           </div>
           <div className="char-limb char-typing-right">
-            <IsoBox x={10} y={-26} z={80} w={6} d={22} h={7} className="box-char-shirt" />
-            <IsoBox x={10} y={-31} z={81} w={5} d={6} h={5} className="box-char-skin" />
+            <CharBox x={11} y={2} z={76} w={6} d={21} h={7} className="box-char-shirt" />
+            <CharBox x={12} y={23} z={77} w={4} d={5} h={5} className="box-char-skin" />
           </div>
           <div className="char-limb char-head-work">
-            <CharacterHead baseZ={89} faceDirection="back" />
+            <CharacterHead baseZ={87} />
           </div>
-        </>
+        </div>
       )}
 
       {!isWalking && !isCustomIdle && activity === 'bookshelf' && (
         <div className="char-pose-north">
           <div className="char-shadow" />
-          <IsoBox x={-10} y={-4} z={0} w={8} d={12} h={6} className="box-char-shoe" />
-          <IsoBox x={-10} y={-4} z={6} w={8} d={9} h={36} className="box-char-pants" />
-          <IsoBox x={2} y={-4} z={0} w={8} d={12} h={6} className="box-char-shoe" />
-          <IsoBox x={2} y={-4} z={6} w={8} d={9} h={36} className="box-char-pants" />
+          <StandingLegs />
           <CharacterTorso z={44} h={32} />
           {/* Chest-level forearms + hands holding diagnostic tablet toward wall monitor */}
-          <IsoBox x={-17} y={4} z={62} w={6} d={16} h={7} className="box-char-shirt" />
-          <IsoBox x={-16} y={18} z={63} w={5} d={5} h={5} className="box-char-skin" />
-          <IsoBox x={11} y={4} z={62} w={6} d={16} h={7} className="box-char-shirt" />
-          <IsoBox x={11} y={18} z={63} w={5} d={5} h={5} className="box-char-skin" />
+          <CharBox x={-17} y={4} z={62} w={6} d={16} h={7} className="box-char-shirt" />
+          <CharBox x={-16} y={19} z={63} w={4} d={5} h={5} className="box-char-skin" />
+          <CharBox x={11} y={4} z={62} w={6} d={16} h={7} className="box-char-shirt" />
+          <CharBox x={12} y={19} z={63} w={4} d={5} h={5} className="box-char-skin" />
           <div className="char-limb char-prop-book">
-            <IsoBox x={-11} y={18} z={66} w={22} d={10} h={3} className="box-char-phone" />
+            <CharBox x={-11} y={18} z={66} w={22} d={10} h={3} className="box-char-phone" />
           </div>
           <div className="char-limb char-head-read">
-            <CharacterHead baseZ={80} faceDirection="front" />
+            <CharacterHead baseZ={80} />
           </div>
         </div>
       )}
@@ -405,19 +419,16 @@ export function RoomCharacter({ walkTarget = null }: RoomCharacterProps) {
       {!isWalking && !isCustomIdle && activity === 'coffee_table' && (
         <div className="char-pose-west">
           <div className="char-shadow" />
-          <IsoBox x={-10} y={-4} z={0} w={8} d={12} h={6} className="box-char-shoe" />
-          <IsoBox x={-10} y={-4} z={6} w={8} d={9} h={36} className="box-char-pants" />
-          <IsoBox x={2} y={-4} z={0} w={8} d={12} h={6} className="box-char-shoe" />
-          <IsoBox x={2} y={-4} z={6} w={8} d={9} h={36} className="box-char-pants" />
+          <StandingLegs />
           <CharacterTorso z={44} h={32} />
           <div className="char-limb char-table-arms">
-            <IsoBox x={-17} y={4} z={61} w={6} d={15} h={7} className="box-char-shirt" />
-            <IsoBox x={-16} y={18} z={62} w={5} d={5} h={5} className="box-char-skin" />
-            <IsoBox x={11} y={4} z={61} w={6} d={15} h={7} className="box-char-shirt" />
-            <IsoBox x={11} y={18} z={62} w={5} d={5} h={5} className="box-char-skin" />
+            <CharBox x={-17} y={4} z={61} w={6} d={15} h={7} className="box-char-shirt" />
+            <CharBox x={-16} y={18} z={62} w={4} d={5} h={5} className="box-char-skin" />
+            <CharBox x={11} y={4} z={61} w={6} d={15} h={7} className="box-char-shirt" />
+            <CharBox x={12} y={18} z={62} w={4} d={5} h={5} className="box-char-skin" />
           </div>
           <div className="char-limb char-head-read">
-            <CharacterHead baseZ={80} faceDirection="front" />
+            <CharacterHead baseZ={80} />
           </div>
         </div>
       )}
@@ -425,20 +436,17 @@ export function RoomCharacter({ walkTarget = null }: RoomCharacterProps) {
       {!isWalking && !isCustomIdle && activity === 'bed' && (
         <div className="char-pose-east">
           <div className="char-shadow" />
-          <IsoBox x={-10} y={-4} z={0} w={8} d={12} h={6} className="box-char-shoe" />
-          <IsoBox x={-10} y={-4} z={6} w={8} d={9} h={36} className="box-char-pants" />
-          <IsoBox x={2} y={-4} z={0} w={8} d={12} h={6} className="box-char-shoe" />
-          <IsoBox x={2} y={-4} z={6} w={8} d={9} h={36} className="box-char-pants" />
+          <StandingLegs />
           <CharacterTorso z={44} h={32} />
           <div className="char-limb char-gaming-rig">
-            <IsoBox x={-17} y={4} z={61} w={6} d={15} h={7} className="box-char-shirt" />
-            <IsoBox x={-16} y={18} z={62} w={5} d={5} h={5} className="box-char-skin" />
-            <IsoBox x={11} y={4} z={61} w={6} d={15} h={7} className="box-char-shirt" />
-            <IsoBox x={11} y={18} z={62} w={5} d={5} h={5} className="box-char-skin" />
-            <IsoBox x={-10} y={18} z={65} w={20} d={9} h={3} className="box-char-phone" />
+            <CharBox x={-17} y={4} z={61} w={6} d={15} h={7} className="box-char-shirt" />
+            <CharBox x={-16} y={18} z={62} w={4} d={5} h={5} className="box-char-skin" />
+            <CharBox x={11} y={4} z={61} w={6} d={15} h={7} className="box-char-shirt" />
+            <CharBox x={12} y={18} z={62} w={4} d={5} h={5} className="box-char-skin" />
+            <CharBox x={-10} y={18} z={65} w={20} d={9} h={3} className="box-char-phone" />
           </div>
           <div className="char-limb char-head-work">
-            <CharacterHead baseZ={80} faceDirection="front" />
+            <CharacterHead baseZ={80} />
           </div>
         </div>
       )}
@@ -447,17 +455,14 @@ export function RoomCharacter({ walkTarget = null }: RoomCharacterProps) {
         <>
           <div className="char-pose-east">
             <div className="char-shadow" />
-            <IsoBox x={-10} y={-4} z={0} w={8} d={12} h={6} className="box-char-shoe" />
-            <IsoBox x={-10} y={-4} z={6} w={8} d={9} h={36} className="box-char-pants" />
-            <IsoBox x={2} y={-4} z={0} w={8} d={12} h={6} className="box-char-shoe" />
-            <IsoBox x={2} y={-4} z={6} w={8} d={9} h={36} className="box-char-pants" />
+            <StandingLegs />
             <CharacterTorso z={44} h={32} />
-            <IsoBox x={-18} y={-4} z={47} w={6} d={9} h={28} className="box-char-shirt" />
-            <IsoBox x={-17} y={-3} z={42} w={5} d={7} h={5} className="box-char-skin" />
-            <IsoBox x={12} y={-4} z={47} w={6} d={9} h={28} className="box-char-shirt" />
-            <IsoBox x={12} y={-3} z={42} w={5} d={7} h={5} className="box-char-skin" />
+            <CharBox x={-18} y={-4} z={47} w={6} d={8} h={28} className="box-char-shirt" />
+            <CharBox x={-17} y={-3} z={42} w={4} d={6} h={5} className="box-char-skin" />
+            <CharBox x={12} y={-4} z={47} w={6} d={8} h={28} className="box-char-shirt" />
+            <CharBox x={13} y={-3} z={42} w={4} d={6} h={5} className="box-char-skin" />
             <div className="char-limb char-head-gaze">
-              <CharacterHead baseZ={80} faceDirection="front" />
+              <CharacterHead baseZ={80} />
             </div>
           </div>
           {/* Subtle floating cloudy thought bubble kept unrotated toward camera */}

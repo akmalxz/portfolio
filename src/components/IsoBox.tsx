@@ -12,6 +12,10 @@ interface IsoBoxProps {
   topContent?: ReactNode;
   frontContent?: ReactNode;
   leftContent?: ReactNode;
+  backContent?: ReactNode;
+  rightContent?: ReactNode;
+  bottomContent?: ReactNode;
+  allFaces?: boolean;
   ariaHidden?: boolean;
 }
 
@@ -27,6 +31,10 @@ export function IsoBox({
   topContent,
   frontContent,
   leftContent,
+  backContent,
+  rightContent,
+  bottomContent,
+  allFaces = false,
   ariaHidden = true,
 }: IsoBoxProps) {
   const boxVars = {
@@ -41,13 +49,20 @@ export function IsoBox({
 
   return (
     <div
-      className={`iso-box ${className}`.trim()}
+      className={`iso-box ${allFaces ? 'iso-box-solid' : ''} ${className}`.trim()}
       style={boxVars}
       aria-hidden={ariaHidden ? 'true' : undefined}
     >
       <div className="iso-face iso-face-top">{topContent}</div>
       <div className="iso-face iso-face-front">{frontContent}</div>
       <div className="iso-face iso-face-left">{leftContent}</div>
+      {allFaces && (
+        <>
+          <div className="iso-face iso-face-back">{backContent}</div>
+          <div className="iso-face iso-face-right">{rightContent}</div>
+          <div className="iso-face iso-face-bottom">{bottomContent}</div>
+        </>
+      )}
     </div>
   );
 }
