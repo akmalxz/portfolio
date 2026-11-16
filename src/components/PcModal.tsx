@@ -73,8 +73,8 @@ export function PcModal({ activeTab, profile, onClose }: PcModalProps) {
 
   const meta: Record<RoomSectionTab, { eyebrow: string; title: string; summary: string }> = {
     skills: {
-      eyebrow: 'Desk PC',
-      title: 'About & Technical Skills',
+      eyebrow: 'Holotable',
+      title: 'Tech Stack',
       summary: profile.role,
     },
     education: {
@@ -83,8 +83,8 @@ export function PcModal({ activeTab, profile, onClose }: PcModalProps) {
       summary: `${profile.education.length} degrees · ${profile.education[0]?.institution ?? ''}`,
     },
     publications: {
-      eyebrow: 'Holotable',
-      title: 'Research Publications',
+      eyebrow: 'Server 02',
+      title: 'Academic Publications',
       summary: `${profile.publications.length} peer-reviewed papers · ${journals} journal, ${conferences} conference`,
     },
     contact: {
@@ -121,7 +121,12 @@ export function PcModal({ activeTab, profile, onClose }: PcModalProps) {
   ];
 
   return (
-    <ModalDialog open={activeTab !== null} labelledBy={titleId} onClose={onClose}>
+    <ModalDialog
+      open={activeTab !== null}
+      labelledBy={titleId}
+      onClose={onClose}
+      className={activeTab === 'education' ? 'room-dialog-editorial' : undefined}
+    >
       {activeTab && (
         <DialogFrame
           titleId={titleId}
@@ -161,45 +166,104 @@ export function PcModal({ activeTab, profile, onClose }: PcModalProps) {
           )}
 
           {activeTab === 'education' && (
-            <ol className="entry-list is-timeline" role="list">
-              {profile.education.map((edu) => (
-                <li key={edu.degree} className="entry-card is-static">
-                  <div className="entry-toggle is-static">
-                    <span className="entry-heading">
-                      <span className="entry-title">{edu.degree}</span>
-                      <span className="entry-subtitle">{edu.institution}</span>
-                    </span>
-                    <span className="entry-side">
-                      <span className="entry-period">{edu.period}</span>
-                    </span>
-                  </div>
-                  <ul className="entry-metrics" role="list">
-                    <li className="entry-metric">
-                      <span className="metric-value">{edu.highlight}</span>
-                    </li>
-                  </ul>
-                </li>
-              ))}
+            <ol className="edu-timeline" role="list">
+              {profile.education.map((edu, idx) => {
+                const thesisHref = edu.thesisUrl?.trim() ?? '';
+                const hasThesisUrl = thesisHref.length > 0;
+                const thesisLabel = edu.thesisTitle?.trim() || 'Online Master Thesis';
+
+                return (
+                  <li key={edu.degree} className="edu-entry">
+                    <span
+                      className={`edu-dot ${idx === 0 ? 'is-latest' : ''}`}
+                      aria-hidden="true"
+                    />
+                    <div className="edu-body">
+                      <p className="case-meta">
+                        <span>{edu.period}</span>
+                        <span aria-hidden="true">·</span>
+                        <span>{edu.institution}</span>
+                      </p>
+                      <h3 className="edu-degree">{edu.degree}</h3>
+                      <div className="edu-meta-row">
+                        <div
+                          className={`case-tradeoff-item ${idx === 0 ? 'is-solution' : ''}`}
+                        >
+                          <span className="case-section-title">Standing</span>
+                          <p className="case-prose">{edu.highlight}</p>
+                        </div>
+                      </div>
+                      {hasThesisUrl && (
+                        <div className="edu-thesis-row">
+                          <a
+                            className="edu-thesis-link"
+                            href={thesisHref}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            <span>{thesisLabel}</span>
+                            <span aria-hidden="true">↗</span>
+                            <span className="visually-hidden"> (opens in new tab)</span>
+                          </a>
+                        </div>
+                      )}
+                    </div>
+                  </li>
+                );
+              })}
             </ol>
           )}
 
           {activeTab === 'publications' && (
             <ol className="pub-list" role="list">
-              {profile.publications.map((pub, idx) => (
-                <li key={pub.title} className="pub-item">
-                  <span className="pub-index" aria-hidden="true">
-                    {String(idx + 1).padStart(2, '0')}
-                  </span>
-                  <div className="pub-body">
-                    <span className={`pub-type pub-type-${pub.type.toLowerCase()}`}>
-                      {pub.type}
+              {profile.publications.map((pub, idx) => {
+                const href = pub.url?.trim() ?? '';
+                const hasUrl = href.length > 0;
+                const content = (
+                  <>
+                    <span className="pub-index" aria-hidden="true">
+                      {String(idx + 1).padStart(2, '0')}
                     </span>
-                    <p className="pub-title">{pub.title}</p>
-                    <p className="pub-venue">{pub.venue}</p>
-                    <p className="pub-authors">{highlightSelf(pub.authors)}</p>
-                  </div>
-                </li>
-              ))}
+                    <div className="pub-body">
+                      <div className="pub-top">
+                        <span className={`pub-type pub-type-${pub.type.toLowerCase()}`}>
+                          {pub.type}
+                        </span>
+                        {hasUrl && (
+                          <span className="pub-external" aria-hidden="true">
+                            Read paper ↗
+                          </span>
+                        )}
+                      </div>
+                      <p className="pub-title">
+                        {pub.title}
+                        {hasUrl && (
+                          <span className="visually-hidden"> (opens in new tab)</span>
+                        )}
+                      </p>
+                      <p className="pub-venue">{pub.venue}</p>
+                      <p className="pub-authors">{highlightSelf(pub.authors)}</p>
+                    </div>
+                  </>
+                );
+
+                return (
+                  <li key={pub.title} className="pub-item">
+                    {hasUrl ? (
+                      <a
+                        className="pub-link"
+                        href={href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        {content}
+                      </a>
+                    ) : (
+                      <div className="pub-static">{content}</div>
+                    )}
+                  </li>
+                );
+              })}
             </ol>
           )}
 

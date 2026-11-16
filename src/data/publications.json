@@ -1,26 +1,44 @@
 [
   {
-    "title": "Exploring Social Media Research Trends in Malaysia using Bibliometric Analysis and Topic Modelling",
-    "authors": "Tariq, R., Isawasan, P., Shamugam, L., Ahmad Asmawi, M. A. H., Nor Azman, N. A., & Zolkepli, I. A.",
-    "venue": "EAI Endorsed Transactions on Scalable Information Systems",
-    "type": "Journal"
-  },
-  {
     "title": "A Data Science Approach to Exploring the Relationship Between TikTok Engagement and Revenue in Malaysia: A Case Study of the Beauty and Personal Care Sector",
     "authors": "Asmawi, M. A. H. A., Isawasan, P., Shamugam, L., & Salleh, K. A.",
     "venue": "Jurnal Online Informatika",
-    "type": "Journal"
+    "type": "Journal",
+    "url": "https://doi.org/10.15575/join.v10i2.1633"
+  },
+  {
+    "title": "Comprehensive Analysis of Beauty Community Discourse on TikTok Through GPT Embeddings and BERTopic Modeling",
+    "authors": "P Isawasan, MAHA Asmawi, SQ Ong, BY Ooi, KS Savita",
+    "venue": "6th International Conference on Artificial Intelligence and Data Sciences (AiDAS)",
+    "type": "Conference",
+    "url": "https://doi.org/10.1109/AiDAS67696.2025.11213658"
   },
   {
     "title": "Understanding Engagement Metrics and Revenue Trends in Malaysian TikTok Shop Categories",
     "authors": "Ahmad Asmawi, M. A. H., Isawasan, P., Shamugam, L., Savitha, K.S., Budiarto, R.",
     "venue": "15th IEEE Symposium on Computer Applications & Industrial Electronics (IEEE Xplore)",
-    "type": "Conference"
+    "type": "Conference",
+    "url": "https://doi.org/10.1109/ISCAIE64985.2025.11080748"
   },
   {
-    "title": "A Data Analytics Approach to Exploring the Relationship Between TikTok Engagement and Revenue in Malaysia: A Case Study on the Beauty and Personal Care Sector",
-    "authors": "Isawasan, P., Ahmad Asmawi, M. A. H., Savitha, K.S., Shamugam, L., K.A. Salleh.",
-    "venue": "10th International Conference on Computing and Informatics (ICOCI)",
-    "type": "Conference"
+    "title": "Emerging Themes and Research Directions in MOOCs and Micro-credentials",
+    "authors": "KS Savita, P Isawasan, MAHA Asmawi, M Shaheen, R Ghafoor",
+    "venue": "International Journal of Modern Education and Computer Science",
+    "type": "Journal",
+    "url": "https://sciup.org/emerging-themes-and-research-directions-in-moocs-and-micro-credentials-15020061?download=1"
+  },
+  {
+    "title": "Exploring sentiment trends in TikTok comments using GPT for influencer content strategy",
+    "authors": "MAHA Asmawi, P ISawasan, ",
+    "venue": "e-Academia Journal",
+    "type": "Journal",
+    "url": "https://ir.uitm.edu.my/id/eprint/118867/1/118867.pdf"
+  },
+  {
+    "title": "Exploring Social Media Research Trends in Malaysia using Bibliometric Analysis and Topic Modelling",
+    "authors": "Tariq, R., Isawasan, P., Shamugam, L., Ahmad Asmawi, M. A. H., Nor Azman, N. A., & Zolkepli, I. A.",
+    "venue": "EAI Endorsed Transactions on Scalable Information Systems",
+    "type": "Journal",
+    "url": "https://doi.org/10.4108/eetsis.7003"
   }
 ]

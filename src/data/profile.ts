@@ -18,6 +18,8 @@ export interface EducationEntry {
   institution: string;
   period: string;
   highlight: string;
+  thesisTitle?: string;
+  thesisUrl?: string;
 }
 
 export interface PublicationEntry {
@@ -25,6 +27,7 @@ export interface PublicationEntry {
   authors: string;
   venue: string;
   type: 'Journal' | 'Conference';
+  url?: string;
 }
 
 export interface ReferenceEntry {
