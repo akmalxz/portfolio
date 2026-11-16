@@ -80,8 +80,10 @@ export function BedroomCorner({
   const isProjectsActive =
     hoveredCallout === 'projects' || hoveredBook?.category === 'project';
   const isExperienceActive =
-    hoveredCallout === 'experience' || hoveredBook?.category === 'experience';
-  const isSkillsActive = hoveredCallout === 'skills' || hoveredPc;
+    hoveredCallout === 'experience' ||
+    hoveredBook?.category === 'experience' ||
+    hoveredPc;
+  const isSkillsActive = hoveredCallout === 'skills';
   const isEducationActive = hoveredCallout === 'education';
   const isPublicationsActive = hoveredCallout === 'publications';
   const isContactActive = hoveredCallout === 'contact';
@@ -112,27 +114,27 @@ export function BedroomCorner({
               <circle className="callout-target-dot pin-dot-cobalt" cx="344" cy="119" r="3.5" />
             </g>
 
-            {/* 2. Experience Leader Line */}
+            {/* 2. Work Experience Leader Line (points to Desk PC) */}
             <g className={`callout-branch ${isExperienceActive ? 'is-active' : ''}`}>
-              <polyline
-                className="callout-line"
-                points="325,188 235,126 196,126"
-              />
-              <circle className="callout-target-ring" cx="325" cy="188" r="7" />
-              <circle className="callout-target-dot pin-dot-teal" cx="325" cy="188" r="3.5" />
-            </g>
-
-            {/* 3. Technical Skills Leader Line (routed below desk so callout never blocks PC) */}
-            <g className={`callout-branch ${isSkillsActive ? 'is-active' : ''}`}>
               <polyline
                 className="callout-line"
                 points="142,352 112,424 112,432"
               />
               <circle className="callout-target-ring" cx="142" cy="352" r="7" />
-              <circle className="callout-target-dot pin-dot-sky" cx="142" cy="352" r="3.5" />
+              <circle className="callout-target-dot pin-dot-teal" cx="142" cy="352" r="3.5" />
             </g>
 
-            {/* 4. Education Leader Line (points to Rack 3: UITM · MSC IT) */}
+            {/* 3. Tech Stack Leader Line (points to Holotable) */}
+            <g className={`callout-branch ${isSkillsActive ? 'is-active' : ''}`}>
+              <polyline
+                className="callout-line"
+                points="376,401 368,510 350,510"
+              />
+              <circle className="callout-target-ring" cx="376" cy="401" r="7" />
+              <circle className="callout-target-dot pin-dot-sky" cx="376" cy="401" r="3.5" />
+            </g>
+
+            {/* 4. Education Leader Line (points to Rack 1: UITM · MSC IT) */}
             <g className={`callout-branch ${isEducationActive ? 'is-active' : ''}`}>
               <polyline
                 className="callout-line"
@@ -142,7 +144,17 @@ export function BedroomCorner({
               <circle className="callout-target-dot pin-dot-indigo" cx="475" cy="163" r="3.5" />
             </g>
 
-            {/* 5. Contact Leader Line (points to Rack 2: 32B LLM · RAG) */}
+            {/* 5. Academic Publications Leader Line (points to Rack 2: DAGSTER · ETL) */}
+            <g className={`callout-branch ${isPublicationsActive ? 'is-active' : ''}`}>
+              <polyline
+                className="callout-line"
+                points="525,187 580,178 634,178"
+              />
+              <circle className="callout-target-ring" cx="525" cy="187" r="7" />
+              <circle className="callout-target-dot pin-dot-violet" cx="525" cy="187" r="3.5" />
+            </g>
+
+            {/* 6. Contact Leader Line (points to Rack 4: 32B LLM · RAG) */}
             <g className={`callout-branch ${isContactActive ? 'is-active' : ''}`}>
               <polyline
                 className="callout-line"
@@ -150,16 +162,6 @@ export function BedroomCorner({
               />
               <circle className="callout-target-ring" cx="605" cy="294" r="7" />
               <circle className="callout-target-dot pin-dot-mint" cx="605" cy="294" r="3.5" />
-            </g>
-
-            {/* 6. Publications Leader Line */}
-            <g className={`callout-branch ${isPublicationsActive ? 'is-active' : ''}`}>
-              <polyline
-                className="callout-line"
-                points="376,401 368,510 350,510"
-              />
-              <circle className="callout-target-ring" cx="376" cy="401" r="7" />
-              <circle className="callout-target-dot pin-dot-violet" cx="376" cy="401" r="3.5" />
             </g>
           </svg>
 
@@ -378,7 +380,7 @@ export function BedroomCorner({
                 </div>
               }
             />
-            {/* Rack 4: Dagster ETL Worker Node */}
+            {/* Rack 2: Dagster ETL Worker Node (Academic Publications Target) */}
             <IsoBox
               x={464}
               y={134}
@@ -386,7 +388,7 @@ export function BedroomCorner({
               w={52}
               d={58}
               h={112}
-              className="box-server-rack"
+              className={`box-server-rack ${isPublicationsActive ? 'is-rack-active' : ''}`}
               leftContent={
                 <div className="server-rack-face">
                   <span className="rack-label">DAGSTER · ETL</span>
@@ -573,7 +575,7 @@ export function BedroomCorner({
                       );
                     })}
                     {experienceBooks.map((book) => {
-                      const isActive = hoveredBookId === book.id || isExperienceActive;
+                      const isActive = hoveredBookId === book.id;
                       return (
                         <button
                           key={book.id}
@@ -603,14 +605,16 @@ export function BedroomCorner({
             {/* Desk + Clickable PC Setup */}
             <DeskSetup
               profile={profile}
-              isHovered={isSkillsActive}
-              isZoneHighlighted={isSkillsActive}
+              isHovered={isExperienceActive}
+              isZoneHighlighted={isExperienceActive}
               previewBook={hoveredBook ?? null}
               onHoverChange={(active) => {
                 setHoveredBookId(null);
                 setHoveredPc(active);
               }}
-              onOpenPc={() => onOpenSection('skills')}
+              onOpenPc={() => {
+                if (experienceBooks[0]) onSelectBook(experienceBooks[0]);
+              }}
             />
 
             {/* Animated Isometric Character */}
@@ -641,14 +645,26 @@ export function BedroomCorner({
               </span>
             </button>
 
-            {/* 2. Work Experience Callout (Off Upper-Left Wall Edge) */}
+            {/* 2. Work Experience Callout (Desk PC) */}
             <button
               type="button"
               className={`room-callout callout-experience ${isExperienceActive ? 'is-active' : ''}`}
-              onMouseEnter={() => setHoveredCallout('experience')}
-              onMouseLeave={() => setHoveredCallout(null)}
-              onFocus={() => setHoveredCallout('experience')}
-              onBlur={() => setHoveredCallout(null)}
+              onMouseEnter={() => {
+                setHoveredCallout('experience');
+                setHoveredPc(true);
+              }}
+              onMouseLeave={() => {
+                setHoveredCallout(null);
+                setHoveredPc(false);
+              }}
+              onFocus={() => {
+                setHoveredCallout('experience');
+                setHoveredPc(true);
+              }}
+              onBlur={() => {
+                setHoveredCallout(null);
+                setHoveredPc(false);
+              }}
               onClick={() => {
                 if (experienceBooks[0]) onSelectBook(experienceBooks[0]);
               }}
@@ -663,39 +679,27 @@ export function BedroomCorner({
               </span>
             </button>
 
-            {/* 3. Data & AI Stack (Below Left Floor Edge — clear of Desk PC) */}
+            {/* 3. Tech Stack Callout (Holotable) */}
             <button
               type="button"
               className={`room-callout callout-skills ${isSkillsActive ? 'is-active' : ''}`}
-              onMouseEnter={() => {
-                setHoveredCallout('skills');
-                setHoveredPc(true);
-              }}
-              onMouseLeave={() => {
-                setHoveredCallout(null);
-                setHoveredPc(false);
-              }}
-              onFocus={() => {
-                setHoveredCallout('skills');
-                setHoveredPc(true);
-              }}
-              onBlur={() => {
-                setHoveredCallout(null);
-                setHoveredPc(false);
-              }}
+              onMouseEnter={() => setHoveredCallout('skills')}
+              onMouseLeave={() => setHoveredCallout(null)}
+              onFocus={() => setHoveredCallout('skills')}
+              onBlur={() => setHoveredCallout(null)}
               onClick={() => onOpenSection('skills')}
             >
               <span className="callout-card">
                 <span className="callout-dot pin-dot-sky" aria-hidden="true" />
                 <span className="callout-text">
-                  <span className="callout-title">Data &amp; AI Stack</span>
+                  <span className="callout-title">Tech Stack</span>
                   <span className="callout-sub">Python · Dagster · PostgreSQL</span>
                 </span>
                 <span className="callout-arrow" aria-hidden="true">›</span>
               </span>
             </button>
 
-            {/* 4. Education Callout (Above Back-Right Wall) */}
+            {/* 4. Education Callout (Rack 1) */}
             <button
               type="button"
               className={`room-callout callout-education ${isEducationActive ? 'is-active' : ''}`}
@@ -715,7 +719,27 @@ export function BedroomCorner({
               </span>
             </button>
 
-            {/* 5. Contact & References (Off Right Wall Edge beside Server Cluster) */}
+            {/* 5. Academic Publications Callout (Rack 2) */}
+            <button
+              type="button"
+              className={`room-callout callout-publications ${isPublicationsActive ? 'is-active' : ''}`}
+              onMouseEnter={() => setHoveredCallout('publications')}
+              onMouseLeave={() => setHoveredCallout(null)}
+              onFocus={() => setHoveredCallout('publications')}
+              onBlur={() => setHoveredCallout(null)}
+              onClick={() => onOpenSection('publications')}
+            >
+              <span className="callout-card">
+                <span className="callout-dot pin-dot-violet" aria-hidden="true" />
+                <span className="callout-text">
+                  <span className="callout-title">Academic Publications</span>
+                  <span className="callout-sub">IEEE &amp; Indexed ML Research</span>
+                </span>
+                <span className="callout-arrow" aria-hidden="true">›</span>
+              </span>
+            </button>
+
+            {/* 6. Contact & References (Rack 4) */}
             <button
               type="button"
               className={`room-callout callout-contact ${isContactActive ? 'is-active' : ''}`}
@@ -730,26 +754,6 @@ export function BedroomCorner({
                 <span className="callout-text">
                   <span className="callout-title">Contact &amp; References</span>
                   <span className="callout-sub">Direct Uplink &amp; Referees</span>
-                </span>
-                <span className="callout-arrow" aria-hidden="true">›</span>
-              </span>
-            </button>
-
-            {/* 6. Research Publications (Off Front Floor Edge below Holotable) */}
-            <button
-              type="button"
-              className={`room-callout callout-publications ${isPublicationsActive ? 'is-active' : ''}`}
-              onMouseEnter={() => setHoveredCallout('publications')}
-              onMouseLeave={() => setHoveredCallout(null)}
-              onFocus={() => setHoveredCallout('publications')}
-              onBlur={() => setHoveredCallout(null)}
-              onClick={() => onOpenSection('publications')}
-            >
-              <span className="callout-card">
-                <span className="callout-dot pin-dot-violet" aria-hidden="true" />
-                <span className="callout-text">
-                  <span className="callout-title">Publications (4)</span>
-                  <span className="callout-sub">IEEE &amp; Indexed ML Research</span>
                 </span>
                 <span className="callout-arrow" aria-hidden="true">›</span>
               </span>

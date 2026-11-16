@@ -85,7 +85,7 @@ export function DeskSetup({
         } ${previewBook ? 'is-previewing' : ''}`}
         data-preview-tone={previewBook?.tone}
         style={monitorVars}
-        aria-label={`Open About & Technical Skills for ${profile.shortName}`}
+        aria-label={`Open Work Experience for ${profile.shortName}`}
         onMouseEnter={() => onHoverChange(true)}
         onMouseLeave={() => onHoverChange(false)}
         onFocus={() => onHoverChange(true)}

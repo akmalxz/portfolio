@@ -556,13 +556,13 @@
 }
 
 .callout-experience {
-  left: 16px;
-  top: 108px;
+  left: 8px;
+  top: 432px;
 }
 
 .callout-skills {
-  left: 8px;
-  top: 432px;
+  left: 205px;
+  top: 492px;
 }
 
 .callout-education {
@@ -570,14 +570,14 @@
   top: 44px;
 }
 
+.callout-publications {
+  left: 634px;
+  top: 156px;
+}
+
 .callout-contact {
   left: 646px;
   top: 268px;
-}
-
-.callout-publications {
-  left: 205px;
-  top: 492px;
 }
 
 /* Shared 3D Cuboid Primitive */
