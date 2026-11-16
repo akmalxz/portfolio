@@ -1,4 +1,4 @@
-import { useState, type CSSProperties } from 'react';
+import { useState } from 'react';
 import type { ProfileData } from '../data/profile';
 import type { BookEntry } from '../types/library';
 import { DeskSetup } from './DeskSetup';
@@ -21,23 +21,6 @@ type CalloutKey =
   | 'publications'
   | 'contact';
 
-const BOOK_WIDTH: Record<NonNullable<BookEntry['thickness']>, number> = {
-  thin: 16,
-  regular: 20,
-  thick: 26,
-};
-
-const BOOK_HEIGHT: Record<NonNullable<BookEntry['height']>, number> = {
-  short: 38,
-  medium: 46,
-  tall: 54,
-};
-
-const SHELF_Z: Record<'project' | 'experience', number> = {
-  project: 162,
-  experience: 96,
-};
-
 export function BedroomCorner({
   profile,
   books,
@@ -51,26 +34,7 @@ export function BedroomCorner({
   const projectBooks = books.filter((b) => b.category === 'project');
   const experienceBooks = books.filter((b) => b.category === 'experience');
 
-  const layoutShelfBooks = (items: BookEntry[], shelfZ: number) => {
-    let cursorX = 228;
-    return items.map((book) => {
-      const w = BOOK_WIDTH[book.thickness ?? 'regular'];
-      const h = BOOK_HEIGHT[book.height ?? 'medium'];
-      const x = cursorX;
-      cursorX += w + 4;
-      return { book, x, w, h, z: shelfZ + 8 };
-    });
-  };
-
-  const positionedBooks = [
-    ...layoutShelfBooks(projectBooks, SHELF_Z.project),
-    ...layoutShelfBooks(experienceBooks, SHELF_Z.experience),
-  ];
-
   const hoveredBook = books.find((b) => b.id === hoveredBookId);
-  const hoveredBookItem = positionedBooks.find(
-    (item) => item.book.id === hoveredBookId,
-  );
   const isProjectsActive =
     hoveredCallout === 'projects' || hoveredBook?.category === 'project';
   const isExperienceActive =
@@ -93,79 +57,79 @@ export function BedroomCorner({
           {/* SVG Leader Lines & Anchor Target Dots Layer */}
           <svg
             className="iso-callout-svg"
-            viewBox="0 0 780 560"
+            viewBox="0 0 820 570"
             aria-hidden="true"
           >
             {/* 1. Projects Leader Line */}
             <g className={`callout-branch ${isProjectsActive ? 'is-active' : ''}`}>
               <polyline
                 className="callout-line"
-                points="305,109 285,60 250,60"
+                points="344,119 310,48 272,48"
               />
-              <circle className="callout-target-ring" cx="305" cy="109" r="7" />
-              <circle className="callout-target-dot pin-dot-cobalt" cx="305" cy="109" r="3.5" />
+              <circle className="callout-target-ring" cx="344" cy="119" r="7" />
+              <circle className="callout-target-dot pin-dot-cobalt" cx="344" cy="119" r="3.5" />
             </g>
 
             {/* 2. Experience Leader Line */}
             <g className={`callout-branch ${isExperienceActive ? 'is-active' : ''}`}>
               <polyline
                 className="callout-line"
-                points="277,180 230,135 195,135"
+                points="325,188 235,126 196,126"
               />
-              <circle className="callout-target-ring" cx="277" cy="180" r="7" />
-              <circle className="callout-target-dot pin-dot-teal" cx="277" cy="180" r="3.5" />
+              <circle className="callout-target-ring" cx="325" cy="188" r="7" />
+              <circle className="callout-target-dot pin-dot-teal" cx="325" cy="188" r="3.5" />
             </g>
 
-            {/* 3. Technical Skills Leader Line */}
+            {/* 3. Technical Skills Leader Line (routed below desk so callout never blocks PC) */}
             <g className={`callout-branch ${isSkillsActive ? 'is-active' : ''}`}>
               <polyline
                 className="callout-line"
-                points="188,263 188,295 170,295"
+                points="142,352 112,424 112,432"
               />
-              <circle className="callout-target-ring" cx="188" cy="263" r="7" />
-              <circle className="callout-target-dot pin-dot-sky" cx="188" cy="263" r="3.5" />
+              <circle className="callout-target-ring" cx="142" cy="352" r="7" />
+              <circle className="callout-target-dot pin-dot-sky" cx="142" cy="352" r="3.5" />
             </g>
 
-            {/* 4. Education Leader Line */}
+            {/* 4. Education Leader Line (points to Rack 3: UITM · MSC IT) */}
             <g className={`callout-branch ${isEducationActive ? 'is-active' : ''}`}>
               <polyline
                 className="callout-line"
-                points="567,197 580,70 600,70"
+                points="475,163 560,62 644,62"
               />
-              <circle className="callout-target-ring" cx="567" cy="197" r="7" />
-              <circle className="callout-target-dot pin-dot-indigo" cx="567" cy="197" r="3.5" />
+              <circle className="callout-target-ring" cx="475" cy="163" r="7" />
+              <circle className="callout-target-dot pin-dot-indigo" cx="475" cy="163" r="3.5" />
             </g>
 
-            {/* 5. Contact Leader Line */}
+            {/* 5. Contact Leader Line (points to Rack 2: 32B LLM · RAG) */}
             <g className={`callout-branch ${isContactActive ? 'is-active' : ''}`}>
               <polyline
                 className="callout-line"
-                points="510,325 565,270 595,270"
+                points="605,294 625,286 646,286"
               />
-              <circle className="callout-target-ring" cx="510" cy="325" r="7" />
-              <circle className="callout-target-dot pin-dot-mint" cx="510" cy="325" r="3.5" />
+              <circle className="callout-target-ring" cx="605" cy="294" r="7" />
+              <circle className="callout-target-dot pin-dot-mint" cx="605" cy="294" r="3.5" />
             </g>
 
             {/* 6. Publications Leader Line */}
             <g className={`callout-branch ${isPublicationsActive ? 'is-active' : ''}`}>
               <polyline
                 className="callout-line"
-                points="390,398 375,490 350,490"
+                points="376,401 368,510 350,510"
               />
-              <circle className="callout-target-ring" cx="390" cy="398" r="7" />
-              <circle className="callout-target-dot pin-dot-violet" cx="390" cy="398" r="3.5" />
+              <circle className="callout-target-ring" cx="376" cy="401" r="7" />
+              <circle className="callout-target-dot pin-dot-violet" cx="376" cy="401" r="3.5" />
             </g>
           </svg>
 
           {/* 3D Isometric World */}
           <div className="iso-world">
-            {/* 3D Isometric Floor Slab */}
+            {/* 3D Isometric Rectangular Floor Slab (540 x 380) */}
             <IsoBox
               x={0}
               y={0}
               z={-16}
-              w={420}
-              d={420}
+              w={540}
+              d={380}
               h={16}
               className="box-floor-slab"
             />
@@ -175,18 +139,18 @@ export function BedroomCorner({
               x={0}
               y={-14}
               z={-16}
-              w={420}
+              w={540}
               d={14}
-              h={266}
+              h={252}
               className="box-wall-slab"
             />
             <IsoBox
-              x={420}
+              x={540}
               y={-14}
               z={-16}
               w={14}
-              d={434}
-              h={266}
+              d={394}
+              h={252}
               className="box-wall-slab"
             />
 
@@ -205,14 +169,6 @@ export function BedroomCorner({
 
             {/* Back-Right Wall Inner Surface */}
             <div className="iso-wall iso-wall-back-right" aria-hidden="true">
-              <div className="iso-window">
-                <span className="iso-window-pane" />
-                <span className="iso-window-pane" />
-                <span className="iso-window-pane" />
-                <span className="iso-window-pane" />
-                <span className="iso-curtain iso-curtain-left" />
-                <span className="iso-curtain iso-curtain-right" />
-              </div>
               <div className="iso-poster" />
             </div>
 
@@ -221,285 +177,372 @@ export function BedroomCorner({
             <div className="shadow-patch shadow-bed" aria-hidden="true" />
             <div className="shadow-patch shadow-rug" aria-hidden="true" />
 
-            {/* Center Round Rug + Coffee Table + Publications Stack */}
-            <div className="iso-round-rug" aria-hidden="true" />
+            {/* Center Anti-Static Grid Mat + Rectangular 3D Data Pipeline Holotable */}
+            <div className="iso-lab-mat" aria-hidden="true" />
+            <IsoBox x={152} y={248} z={3} w={84} d={32} h={31} className="box-holo-pedestal" />
+            <IsoBox x={126} y={230} z={36} w={136} d={68} h={8} className="box-holo-table" />
             <IsoBox
-              x={126}
-              y={266}
-              z={0}
-              w={6}
-              d={6}
-              h={22}
-              className="box-table-leg"
-            />
-            <IsoBox
-              x={156}
-              y={266}
-              z={0}
-              w={6}
-              d={6}
-              h={22}
-              className="box-table-leg"
-            />
-            <IsoBox
-              x={126}
-              y={296}
-              z={0}
-              w={6}
-              d={6}
-              h={22}
-              className="box-table-leg"
-            />
-            <IsoBox
-              x={156}
-              y={296}
-              z={0}
-              w={6}
-              d={6}
-              h={22}
-              className="box-table-leg"
-            />
-            <IsoBox
-              x={116}
-              y={256}
-              z={22}
-              w={56}
+              x={132}
+              y={236}
+              z={45}
+              w={124}
               d={56}
-              h={5}
-              className="box-coffee-table"
-            />
-            <IsoBox
-              x={126}
-              y={266}
-              z={27}
-              w={22}
-              d={18}
-              h={6}
-              className="box-table-book"
-            />
-            <IsoBox
-              x={152}
-              y={286}
-              z={27}
-              w={8}
-              d={8}
-              h={8}
-              className="box-mug"
+              h={2}
+              className="box-holo-surface"
+              topContent={
+                <div className="holo-pipeline-board" aria-hidden="true">
+                  <span className="holo-grid-overlay" />
+                  {/* Glowing Pipeline Tracks & Animated Moving Data Dots */}
+                  <div className="holo-track holo-track-main">
+                    <span className="holo-data-dot" />
+                    <span className="holo-data-dot is-delayed" />
+                  </div>
+                  <div className="holo-track holo-track-branch-top">
+                    <span className="holo-data-dot is-emerald" />
+                  </div>
+                  <div className="holo-track holo-track-branch-bot">
+                    <span className="holo-data-dot is-emerald is-delayed" />
+                  </div>
+                </div>
+              }
             />
 
-            {/* Nightstand beside Desk */}
+            {/* 3D Holographic Miniature Data Pipeline Stages on Top of Rectangular Holotable */}
+            <IsoBox
+              x={142}
+              y={258}
+              z={48}
+              w={11}
+              d={12}
+              h={6}
+              className="box-holo-node is-ingest"
+            />
+            <IsoBox
+              x={172}
+              y={246}
+              z={48}
+              w={12}
+              d={10}
+              h={8}
+              className="box-holo-node is-transform"
+            />
+            <IsoBox
+              x={172}
+              y={272}
+              z={48}
+              w={12}
+              d={10}
+              h={5}
+              className="box-holo-node is-ml"
+            />
+            <IsoBox
+              x={208}
+              y={256}
+              z={48}
+              w={13}
+              d={14}
+              h={10}
+              className="box-holo-node is-warehouse"
+            />
+            <IsoBox
+              x={238}
+              y={258}
+              z={48}
+              w={10}
+              d={12}
+              h={7}
+              className="box-holo-node is-serve"
+            />
+
+            {/* 3D Elevated Pipeline Conduits with Moving Packet Dots */}
+            <div className="holo-pipe-3d holo-pipe-1" aria-hidden="true">
+              <span className="holo-pipe-dot" />
+            </div>
+            <div className="holo-pipe-3d holo-pipe-2" aria-hidden="true">
+              <span className="holo-pipe-dot is-emerald" />
+            </div>
+            <div className="holo-pipe-3d holo-pipe-3" aria-hidden="true">
+              <span className="holo-pipe-dot" />
+            </div>
+
+            {/* Edge NAS & Ingestion Appliance beside Desk */}
             <IsoBox
               x={224}
               y={10}
               z={0}
-              w={56}
-              d={52}
-              h={50}
+              w={54}
+              d={48}
+              h={48}
               className="box-nightstand"
-            />
-            <IsoBox
-              x={244}
-              y={24}
-              z={50}
-              w={16}
-              d={14}
-              h={14}
-              className="box-clock"
-            />
-
-            {/* Bed tucked along Back-Right Wall */}
-            <IsoBox
-              x={396}
-              y={214}
-              z={0}
-              w={14}
-              d={156}
-              h={84}
-              className="box-bed-headboard"
+              frontContent={
+                <div className="nas-front-bays">
+                  <span className="nas-bay" />
+                  <span className="nas-bay" />
+                  <span className="nas-bay" />
+                </div>
+              }
             />
             <IsoBox
               x={236}
-              y={214}
+              y={18}
+              z={50}
+              w={30}
+              d={24}
+              h={12}
+              className="box-clock"
+              frontContent={<span className="nas-status-led" />}
+            />
+
+            {/* Homelab Server Racks (4 Towers) along Back-Right Wall */}
+            <IsoBox
+              x={454}
+              y={54}
               z={0}
-              w={160}
-              d={156}
-              h={18}
-              className="box-bed-frame"
-            />
-            <IsoBox
-              x={240}
-              y={218}
-              z={18}
-              w={154}
-              d={148}
-              h={16}
-              className="box-bed-mattress"
-            />
-            <IsoBox
-              x={326}
-              y={218}
-              z={34}
-              w={22}
-              d={148}
-              h={5}
-              className="box-bed-sheet"
-            />
-            <IsoBox
-              x={240}
-              y={218}
-              z={34}
-              w={92}
-              d={148}
-              h={6}
-              className="box-bed-blanket"
-            />
-            <IsoBox
-              x={354}
-              y={236}
-              z={34}
-              w={32}
-              d={50}
+              w={72}
+              d={290}
               h={10}
-              className="box-bed-pillow"
+              className="box-server-plinth"
             />
+            {/* Rack 3 (Education Target): MSc IT Academic Compute Node */}
             <IsoBox
-              x={354}
-              y={298}
-              z={34}
-              w={32}
-              d={50}
-              h={10}
-              className="box-bed-pillow"
+              x={464}
+              y={64}
+              z={12}
+              w={52}
+              d={58}
+              h={112}
+              className={`box-server-rack ${isEducationActive ? 'is-rack-active' : ''}`}
+              leftContent={
+                <div className="server-rack-face">
+                  <span className="rack-label">UITM · MSC IT</span>
+                  <span className="server-blade is-cyan" />
+                  <span className="server-blade is-emerald" />
+                  <span className="server-blade is-cyan" />
+                  <span className="server-blade is-cyan" />
+                </div>
+              }
+            />
+            {/* Rack 4: Dagster ETL Worker Node */}
+            <IsoBox
+              x={464}
+              y={134}
+              z={12}
+              w={52}
+              d={58}
+              h={112}
+              className="box-server-rack"
+              leftContent={
+                <div className="server-rack-face">
+                  <span className="rack-label">DAGSTER · ETL</span>
+                  <span className="server-blade is-emerald" />
+                  <span className="server-blade is-emerald" />
+                  <span className="server-blade is-cyan" />
+                  <span className="server-blade is-emerald" />
+                </div>
+              }
+            />
+            {/* Rack 1: PostgreSQL 22M-Row Storage Tower */}
+            <IsoBox
+              x={464}
+              y={204}
+              z={12}
+              w={52}
+              d={58}
+              h={112}
+              className="box-server-rack"
+              leftContent={
+                <div className="server-rack-face">
+                  <span className="rack-label">PGSQL · 22M</span>
+                  <span className="server-blade is-emerald" />
+                  <span className="server-blade is-cyan" />
+                  <span className="server-blade is-cyan" />
+                  <span className="server-blade is-emerald" />
+                </div>
+              }
+            />
+            {/* Rack 2 (Contact Target): Local 32B LLM & ChromaDB Vector Tower */}
+            <IsoBox
+              x={464}
+              y={274}
+              z={12}
+              w={52}
+              d={58}
+              h={112}
+              className={`box-server-rack ${isContactActive ? 'is-rack-active' : ''}`}
+              leftContent={
+                <div className="server-rack-face">
+                  <span className="rack-label">32B LLM · RAG</span>
+                  <span className="server-blade is-cyan" />
+                  <span className="server-blade is-emerald" />
+                  <span className="server-blade is-cyan" />
+                  <span className="server-blade is-emerald" />
+                </div>
+              }
             />
 
-            {/* Two Floating 3D Wall Shelves */}
+            {/* Glowing Fiber-Optic Wires Connecting Server Racks to Pipeline Screen & Desk Server Box */}
+            <div className="server-wire server-wire-floor-1" aria-hidden="true" />
+            <div className="server-wire server-wire-floor-2 is-emerald" aria-hidden="true" />
+            <div className="server-wire server-wire-wall-1" aria-hidden="true" />
+            <div className="server-wire server-wire-wall-2 is-emerald" aria-hidden="true" />
+            <div className="server-wire desk-wire-1a" aria-hidden="true" />
+            <div className="server-wire desk-wire-1b" aria-hidden="true" />
+            <div className="server-wire desk-wire-1c" aria-hidden="true" />
+            <div className="server-wire desk-wire-2a is-emerald" aria-hidden="true" />
+            <div className="server-wire desk-wire-2b is-emerald" aria-hidden="true" />
+            <div className="server-wire desk-wire-2c is-emerald" aria-hidden="true" />
+            {/* Glowing Floor Wire from 2nd Server Block (DAGSTER · ETL) to Pipeline Table */}
+            <div className="server-wire table-wire-1a is-emerald" aria-hidden="true" />
+            <div className="server-wire table-wire-1b is-emerald" aria-hidden="true" />
+            <div className="server-wire table-wire-1c is-emerald" aria-hidden="true" />
+
+            {/* Wall-Mounted Flat Pipeline Monitoring System Screen */}
             <IsoBox
-              x={222}
+              x={296}
               y={2}
-              z={SHELF_Z.project}
-              w={172}
-              d={34}
-              h={8}
-              className="box-wall-shelf"
-            />
-            <IsoBox
-              x={222}
-              y={2}
-              z={SHELF_Z.experience}
-              w={172}
-              d={34}
-              h={8}
-              className="box-wall-shelf"
-            />
-
-            {/* Shelf decorative plant & bookend */}
-            <IsoBox
-              x={368}
-              y={10}
-              z={SHELF_Z.project + 8}
-              w={16}
-              d={16}
-              h={14}
-              className="box-plant-pot"
-            />
-            <IsoBox
-              x={365}
-              y={8}
-              z={SHELF_Z.project + 22}
-              w={22}
-              d={20}
-              h={18}
-              className="box-plant-leaf"
-            />
-            <IsoBox
-              x={298}
-              y={8}
-              z={SHELF_Z.experience + 8}
-              w={28}
-              d={20}
-              h={24}
-              className="box-bookend"
-            />
-
-            {/* Clickable 3D Books on the Shelves */}
-            {positionedBooks.map(({ book, x, w, h, z }) => {
-              const isHovered = hoveredBookId === book.id;
-              const isCategoryHovered =
-                (book.category === 'project' && isProjectsActive) ||
-                (book.category === 'experience' && isExperienceActive);
-
-              const bookVars = {
-                '--x': `${x}px`,
-                '--y': '6px',
-                '--z': `${z}px`,
-                '--w': `${w}px`,
-                '--d': '24px',
-                '--h': `${h}px`,
-              } as CSSProperties;
-
-              return (
-                <button
-                  key={book.id}
-                  type="button"
-                  className={`iso-box iso-book-btn ${
-                    isHovered || isCategoryHovered ? 'is-active' : ''
-                  }`}
-                  data-tone={book.tone}
-                  style={bookVars}
-                  aria-label={`${book.spineTitle} (${book.category === 'project' ? 'Project' : 'Work Experience'}, ${book.period})`}
-                  onMouseEnter={() => handleBookFocus(book)}
-                  onMouseLeave={() => setHoveredBookId(null)}
-                  onFocus={() => handleBookFocus(book)}
-                  onBlur={() => setHoveredBookId(null)}
-                  onClick={() => onSelectBook(book)}
-                >
-                  <span className="iso-face iso-face-top" />
-                  <span className="iso-face iso-face-front">
-                    <span className="iso-book-band" />
-                  </span>
-                  <span className="iso-face iso-face-left" />
-                </button>
-              );
-            })}
-
-            {hoveredBookItem && (
-              <div
-                className="shelf-preview-anchor"
-                style={
-                  {
-                    '--preview-x': `${hoveredBookItem.x + hoveredBookItem.w / 2}px`,
-                    '--preview-y': '12px',
-                    '--preview-z': `${hoveredBookItem.z + hoveredBookItem.h + 18}px`,
-                  } as CSSProperties
-                }
-                data-tone={hoveredBookItem.book.tone}
-                aria-hidden="true"
-              >
-                <div className="shelf-preview-card">
-                  <div className="shelf-preview-top">
-                    <span className="shelf-preview-code">
-                      {hoveredBookItem.book.callNumber}
-                    </span>
-                    <span className="shelf-preview-period">
-                      {hoveredBookItem.book.period}
+              z={78}
+              w={230}
+              d={2}
+              h={142}
+              className="box-wall-backplane"
+              frontContent={
+                <div className="dag-wall-board">
+                  <div className="dag-wall-header">
+                    <span className="dag-wall-dot" />
+                    <span className="dag-wall-title">PIPELINE MONITOR // DAGSTER NOC</span>
+                    <span className="dag-wall-badges">
+                      <span className="dag-status-pill is-ok">142 OK</span>
+                      <span className="dag-status-pill is-err">2 ERR</span>
+                      <span className="dag-wall-sla">99.1% SLA</span>
                     </span>
                   </div>
-                  <p className="shelf-preview-title">
-                    {hoveredBookItem.book.title}
-                  </p>
-                  {hoveredBookItem.book.metrics &&
-                    hoveredBookItem.book.metrics.length > 0 && (
-                      <div className="shelf-preview-metrics">
-                        {hoveredBookItem.book.metrics.slice(0, 2).map((m) => (
-                          <span key={m.label} className="shelf-preview-metric">
-                            <strong>{m.value}</strong> {m.label}
-                          </span>
-                        ))}
+
+                  {/* Middle Telemetry Area: Throughput Graph Chart + Run Status Feed */}
+                  <div className="dag-monitor-grid">
+                    <div className="dag-chart-card">
+                      <div className="dag-chart-head">
+                        <span>THROUGHPUT · ROWS/HR</span>
+                        <span className="dag-chart-val">22.4M</span>
                       </div>
-                    )}
+                      <svg className="dag-chart-svg" viewBox="0 0 120 46" aria-hidden="true">
+                        <defs>
+                          <linearGradient id="dagAreaGrad" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0%" stopColor="rgb(56 189 248 / 0.42)" />
+                            <stop offset="100%" stopColor="rgb(56 189 248 / 0.02)" />
+                          </linearGradient>
+                        </defs>
+                        {/* Grid lines */}
+                        <line className="dag-chart-grid" x1="0" y1="12" x2="120" y2="12" />
+                        <line className="dag-chart-grid" x1="0" y1="24" x2="120" y2="24" />
+                        <line className="dag-chart-grid" x1="0" y1="36" x2="120" y2="36" />
+                        {/* Area + Line */}
+                        <path
+                          className="dag-chart-area"
+                          d="M0,36 L14,30 L28,32 L42,20 L56,23 L70,13 L84,18 L98,9 L112,12 L120,7 L120,46 L0,46 Z"
+                          fill="url(#dagAreaGrad)"
+                        />
+                        <polyline
+                          className="dag-chart-line"
+                          points="0,36 14,30 28,32 42,20 56,23 70,13 84,18 98,9 112,12 120,7"
+                        />
+                        {/* Success SLA baseline */}
+                        <polyline
+                          className="dag-chart-line is-emerald"
+                          points="0,41 24,39 48,38 72,36 96,35 120,34"
+                        />
+                        {/* Error spike marker */}
+                        <circle className="dag-chart-err-dot" cx="56" cy="23" r="2.2" />
+                        <circle className="dag-chart-ok-dot" cx="98" cy="9" r="2.2" />
+                      </svg>
+                      <div className="dag-chart-axis">
+                        <span>00:00</span>
+                        <span>LATENCY 240ms</span>
+                        <span>NOW</span>
+                      </div>
+                    </div>
+
+                    <div className="dag-log-card">
+                      <div className="dag-chart-head">
+                        <span>RUN HEALTH</span>
+                        <span className="dag-log-live">LIVE</span>
+                      </div>
+                      <div className="dag-log-list">
+                        <div className="dag-log-row">
+                          <span className="dag-log-badge is-ok">OK</span>
+                          <span className="dag-log-name">etl_demography</span>
+                          <span className="dag-log-ms">240ms</span>
+                        </div>
+                        <div className="dag-log-row">
+                          <span className="dag-log-badge is-ok">OK</span>
+                          <span className="dag-log-name">rag_embed_32b</span>
+                          <span className="dag-log-ms">1.1s</span>
+                        </div>
+                        <div className="dag-log-row is-err-row">
+                          <span className="dag-log-badge is-err">ERR</span>
+                          <span className="dag-log-name">geo_sync_retry</span>
+                          <span className="dag-log-ms">504</span>
+                        </div>
+                        <div className="dag-log-row">
+                          <span className="dag-log-badge is-ok">OK</span>
+                          <span className="dag-log-name">banci_econ_dag</span>
+                          <span className="dag-log-ms">98%</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Bottom Interactive Asset Strip (Projects + Experience Nodes) */}
+                  <div className="dag-asset-strip">
+                    {projectBooks.map((book) => {
+                      const isActive = hoveredBookId === book.id || isProjectsActive;
+                      return (
+                        <button
+                          key={book.id}
+                          type="button"
+                          className={`dag-screen-node ${isActive ? 'is-active' : ''}`}
+                          data-tone={book.tone}
+                          aria-label={`${book.spineTitle} (Project, ${book.period})`}
+                          onMouseEnter={() => handleBookFocus(book)}
+                          onMouseLeave={() => setHoveredBookId(null)}
+                          onFocus={() => handleBookFocus(book)}
+                          onBlur={() => setHoveredBookId(null)}
+                          onClick={() => onSelectBook(book)}
+                        >
+                          <span className="dag-node-top">
+                            <span className="dag-node-dot" />
+                            <span className="dag-node-code">{book.callNumber}</span>
+                          </span>
+                          <span className="dag-node-name">{book.spineTitle}</span>
+                        </button>
+                      );
+                    })}
+                    {experienceBooks.map((book) => {
+                      const isActive = hoveredBookId === book.id || isExperienceActive;
+                      return (
+                        <button
+                          key={book.id}
+                          type="button"
+                          className={`dag-screen-node is-exp ${isActive ? 'is-active' : ''}`}
+                          data-tone={book.tone}
+                          aria-label={`${book.spineTitle} (Work Experience, ${book.period})`}
+                          onMouseEnter={() => handleBookFocus(book)}
+                          onMouseLeave={() => setHoveredBookId(null)}
+                          onFocus={() => handleBookFocus(book)}
+                          onBlur={() => setHoveredBookId(null)}
+                          onClick={() => onSelectBook(book)}
+                        >
+                          <span className="dag-node-top">
+                            <span className="dag-node-dot" />
+                            <span className="dag-node-code">{book.callNumber}</span>
+                          </span>
+                          <span className="dag-node-name">{book.spineTitle}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
                 </div>
-              </div>
-            )}
+              }
+            />
 
             {/* Desk + Clickable PC Setup */}
             <DeskSetup
@@ -524,22 +567,10 @@ export function BedroomCorner({
             <button
               type="button"
               className={`room-callout callout-projects ${isProjectsActive ? 'is-active' : ''}`}
-              onMouseEnter={() => {
-                setHoveredCallout('projects');
-                if (projectBooks[0]) setHoveredBookId(projectBooks[0].id);
-              }}
-              onMouseLeave={() => {
-                setHoveredCallout(null);
-                setHoveredBookId(null);
-              }}
-              onFocus={() => {
-                setHoveredCallout('projects');
-                if (projectBooks[0]) setHoveredBookId(projectBooks[0].id);
-              }}
-              onBlur={() => {
-                setHoveredCallout(null);
-                setHoveredBookId(null);
-              }}
+              onMouseEnter={() => setHoveredCallout('projects')}
+              onMouseLeave={() => setHoveredCallout(null)}
+              onFocus={() => setHoveredCallout('projects')}
+              onBlur={() => setHoveredCallout(null)}
               onClick={() => {
                 if (projectBooks[0]) onSelectBook(projectBooks[0]);
               }}
@@ -548,8 +579,9 @@ export function BedroomCorner({
                 <span className="callout-dot pin-dot-cobalt" aria-hidden="true" />
                 <span className="callout-text">
                   <span className="callout-title">Key Projects</span>
-                  <span className="callout-sub">5 Volumes</span>
+                  <span className="callout-sub">22M+ Rows · Geo-RAG · ETL</span>
                 </span>
+                <span className="callout-arrow" aria-hidden="true">›</span>
               </span>
             </button>
 
@@ -557,22 +589,10 @@ export function BedroomCorner({
             <button
               type="button"
               className={`room-callout callout-experience ${isExperienceActive ? 'is-active' : ''}`}
-              onMouseEnter={() => {
-                setHoveredCallout('experience');
-                if (experienceBooks[0]) setHoveredBookId(experienceBooks[0].id);
-              }}
-              onMouseLeave={() => {
-                setHoveredCallout(null);
-                setHoveredBookId(null);
-              }}
-              onFocus={() => {
-                setHoveredCallout('experience');
-                if (experienceBooks[0]) setHoveredBookId(experienceBooks[0].id);
-              }}
-              onBlur={() => {
-                setHoveredCallout(null);
-                setHoveredBookId(null);
-              }}
+              onMouseEnter={() => setHoveredCallout('experience')}
+              onMouseLeave={() => setHoveredCallout(null)}
+              onFocus={() => setHoveredCallout('experience')}
+              onBlur={() => setHoveredCallout(null)}
               onClick={() => {
                 if (experienceBooks[0]) onSelectBook(experienceBooks[0]);
               }}
@@ -581,12 +601,13 @@ export function BedroomCorner({
                 <span className="callout-dot pin-dot-teal" aria-hidden="true" />
                 <span className="callout-text">
                   <span className="callout-title">Work Experience</span>
-                  <span className="callout-sub">DOSM &amp; UTP</span>
+                  <span className="callout-sub">DOSM &amp; UTP · 95% DAG SLA</span>
                 </span>
+                <span className="callout-arrow" aria-hidden="true">›</span>
               </span>
             </button>
 
-            {/* 3. Technical Skills & Bio (Off Left Floor Edge beside Desk) */}
+            {/* 3. Data & AI Stack (Below Left Floor Edge — clear of Desk PC) */}
             <button
               type="button"
               className={`room-callout callout-skills ${isSkillsActive ? 'is-active' : ''}`}
@@ -611,9 +632,10 @@ export function BedroomCorner({
               <span className="callout-card">
                 <span className="callout-dot pin-dot-sky" aria-hidden="true" />
                 <span className="callout-text">
-                  <span className="callout-title">Technical Skills &amp; Bio</span>
-                  <span className="callout-sub">ETL, AI &amp; Web</span>
+                  <span className="callout-title">Data &amp; AI Stack</span>
+                  <span className="callout-sub">Python · Dagster · PostgreSQL</span>
                 </span>
+                <span className="callout-arrow" aria-hidden="true">›</span>
               </span>
             </button>
 
@@ -631,12 +653,13 @@ export function BedroomCorner({
                 <span className="callout-dot pin-dot-indigo" aria-hidden="true" />
                 <span className="callout-text">
                   <span className="callout-title">Education</span>
-                  <span className="callout-sub">MSc IT &amp; BSc CS</span>
+                  <span className="callout-sub">MSc IT &amp; BSc CS · UiTM</span>
                 </span>
+                <span className="callout-arrow" aria-hidden="true">›</span>
               </span>
             </button>
 
-            {/* 5. Contact & References (Off Right Wall Edge beside Bed) */}
+            {/* 5. Contact & References (Off Right Wall Edge beside Server Cluster) */}
             <button
               type="button"
               className={`room-callout callout-contact ${isContactActive ? 'is-active' : ''}`}
@@ -650,12 +673,13 @@ export function BedroomCorner({
                 <span className="callout-dot pin-dot-mint" aria-hidden="true" />
                 <span className="callout-text">
                   <span className="callout-title">Contact &amp; References</span>
-                  <span className="callout-sub">Direct Info &amp; Referees</span>
+                  <span className="callout-sub">Direct Uplink &amp; Referees</span>
                 </span>
+                <span className="callout-arrow" aria-hidden="true">›</span>
               </span>
             </button>
 
-            {/* 6. Research Publications (Off Front Floor Edge below Coffee Table) */}
+            {/* 6. Research Publications (Off Front Floor Edge below Holotable) */}
             <button
               type="button"
               className={`room-callout callout-publications ${isPublicationsActive ? 'is-active' : ''}`}
@@ -669,10 +693,38 @@ export function BedroomCorner({
                 <span className="callout-dot pin-dot-violet" aria-hidden="true" />
                 <span className="callout-text">
                   <span className="callout-title">Publications (4)</span>
-                  <span className="callout-sub">Research Archive</span>
+                  <span className="callout-sub">IEEE &amp; Indexed ML Research</span>
                 </span>
+                <span className="callout-arrow" aria-hidden="true">›</span>
               </span>
             </button>
+
+            {hoveredBook && (
+              <div
+                className="shelf-preview-card"
+                data-tone={hoveredBook.tone}
+                aria-hidden="true"
+              >
+                <div className="shelf-preview-top">
+                  <span className="shelf-preview-code">
+                    {hoveredBook.callNumber}
+                  </span>
+                  <span className="shelf-preview-period">
+                    {hoveredBook.period}
+                  </span>
+                </div>
+                <p className="shelf-preview-title">{hoveredBook.title}</p>
+                {hoveredBook.metrics && hoveredBook.metrics.length > 0 && (
+                  <div className="shelf-preview-metrics">
+                    {hoveredBook.metrics.slice(0, 2).map((m) => (
+                      <span key={m.label} className="shelf-preview-metric">
+                        <strong>{m.value}</strong> {m.label}
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         </div>
       </div>

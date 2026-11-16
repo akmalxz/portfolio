@@ -1,0 +1,33 @@
+{
+  "email": "muhammadakmal2490@gmail.com",
+  "phone": "+60 18 288 2455",
+  "linkedin": "https://www.linkedin.com/in/m-akmal-hakim/",
+  "links": [
+    {
+      "label": "LinkedIn",
+      "href": "https://www.linkedin.com/in/m-akmal-hakim/"
+    },
+    {
+      "label": "muhammadakmal2490@gmail.com",
+      "href": "mailto:muhammadakmal2490@gmail.com"
+    },
+    {
+      "label": "+60 18 288 2455",
+      "href": "tel:+60182882455"
+    }
+  ],
+  "references": [
+    {
+      "name": "Ts. Noradilah Adnan",
+      "role": "Penolong Pengarah",
+      "organization": "National Big Data Analytic Centre (NBDAC), DOSM",
+      "email": "noradilah.adnan@dosm.gov.my"
+    },
+    {
+      "name": "Ts. Dr. Pradeep Isawasan",
+      "role": "Master Supervisor",
+      "organization": "Universiti Teknologi MARA (UiTM)",
+      "email": "pradeep@uitm.edu.my"
+    }
+  ]
+}

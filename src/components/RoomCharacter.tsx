@@ -23,22 +23,22 @@ const ACTIVITIES: readonly CharacterActivity[] = [
   'window',
 ];
 
-const HUB_POS: RoomPoint = { x: 212, y: 172 };
+const HUB_POS: RoomPoint = { x: 268, y: 156 };
 
 const STAND_POS: Record<CharacterActivity, RoomPoint> = {
   desktop: { x: 162, y: 136 },
-  bookshelf: { x: 312, y: 68 },
-  coffee_table: { x: 192, y: 280 },
-  bed: { x: 222, y: 266 },
-  window: { x: 364, y: 112 },
+  bookshelf: { x: 406, y: 68 },
+  coffee_table: { x: 256, y: 264 },
+  bed: { x: 344, y: 268 },
+  window: { x: 426, y: 112 },
 };
 
 const PERFORM_POS: Record<CharacterActivity, RoomPoint> = {
   desktop: { x: 116, y: 126 },
-  bookshelf: { x: 312, y: 66 },
-  coffee_table: { x: 192, y: 282 },
-  bed: { x: 316, y: 264 },
-  window: { x: 368, y: 112 },
+  bookshelf: { x: 406, y: 66 },
+  coffee_table: { x: 248, y: 264 },
+  bed: { x: 350, y: 268 },
+  window: { x: 426, y: 112 },
 };
 
 const WALK_DURATION_MS = 950;
@@ -141,12 +141,12 @@ export function RoomCharacter() {
           <IsoBox x={2} y={-25} z={3} w={8} d={11} h={5} className="box-char-shoe" />
           <IsoBox x={-12} y={-6} z={46} w={24} d={14} h={36} className="box-char-shirt" />
           <div className="char-limb char-typing-left">
-            <IsoBox x={-16} y={-36} z={72} w={6} d={32} h={7} className="box-char-shirt" />
-            <IsoBox x={-15} y={-42} z={74} w={5} d={7} h={5} className="box-char-skin" />
+            <IsoBox x={-16} y={-26} z={86} w={6} d={22} h={7} className="box-char-shirt" />
+            <IsoBox x={-15} y={-31} z={87} w={5} d={6} h={5} className="box-char-skin" />
           </div>
           <div className="char-limb char-typing-right">
-            <IsoBox x={10} y={-36} z={72} w={6} d={32} h={7} className="box-char-shirt" />
-            <IsoBox x={10} y={-42} z={74} w={5} d={7} h={5} className="box-char-skin" />
+            <IsoBox x={10} y={-26} z={86} w={6} d={22} h={7} className="box-char-shirt" />
+            <IsoBox x={10} y={-31} z={87} w={5} d={6} h={5} className="box-char-skin" />
           </div>
           <div className="char-limb char-head-work">
             <IsoBox x={-8} y={-8} z={82} w={16} d={15} h={16} className="box-char-skin" />
@@ -166,8 +166,7 @@ export function RoomCharacter() {
           <IsoBox x={-17} y={-20} z={54} w={6} d={20} h={8} className="box-char-shirt" />
           <IsoBox x={11} y={-20} z={54} w={6} d={20} h={8} className="box-char-shirt" />
           <div className="char-limb char-prop-book">
-            <IsoBox x={-12} y={-26} z={58} w={24} d={14} h={3} className="box-char-book-cover" />
-            <IsoBox x={-10} y={-25} z={61} w={20} d={12} h={3} className="box-char-book-pages" />
+            <IsoBox x={-11} y={-25} z={58} w={22} d={12} h={3} className="box-char-phone" />
           </div>
           <div className="char-limb char-head-read">
             <IsoBox x={-8} y={-9} z={78} w={16} d={15} h={16} className="box-char-skin" />
@@ -178,38 +177,46 @@ export function RoomCharacter() {
 
       {!isWalking && activity === 'coffee_table' && (
         <>
-          <IsoBox x={-18} y={-16} z={2} w={30} d={32} h={10} className="box-char-pants" />
-          <IsoBox x={-20} y={-14} z={2} w={8} d={9} h={6} className="box-char-shoe" />
-          <IsoBox x={-20} y={5} z={2} w={8} d={9} h={6} className="box-char-shoe" />
-          <IsoBox x={-6} y={-12} z={12} w={16} d={24} h={34} className="box-char-shirt" />
+          <div className="char-shadow" />
+          {/* Standing facing -x toward the Geospatial & ML Research Holotable */}
+          <IsoBox x={-7} y={-10} z={0} w={12} d={8} h={6} className="box-char-shoe" />
+          <IsoBox x={-4} y={-10} z={6} w={9} d={8} h={36} className="box-char-pants" />
+          <IsoBox x={-7} y={2} z={0} w={12} d={8} h={6} className="box-char-shoe" />
+          <IsoBox x={-4} y={2} z={6} w={9} d={8} h={36} className="box-char-pants" />
+          <IsoBox x={-7} y={-12} z={42} w={14} d={24} h={36} className="box-char-shirt" />
           <div className="char-limb char-table-arms">
-            <IsoBox x={-22} y={-16} z={24} w={20} d={6} h={7} className="box-char-shirt" />
-            <IsoBox x={-22} y={10} z={24} w={20} d={6} h={7} className="box-char-shirt" />
-            <IsoBox x={-26} y={-15} z={24} w={5} d={5} h={5} className="box-char-skin" />
-            <IsoBox x={-26} y={10} z={24} w={5} d={5} h={5} className="box-char-skin" />
+            <IsoBox x={-18} y={-16} z={54} w={16} d={6} h={7} className="box-char-shirt" />
+            <IsoBox x={-18} y={10} z={54} w={16} d={6} h={7} className="box-char-shirt" />
+            <IsoBox x={-22} y={-15} z={55} w={5} d={5} h={5} className="box-char-skin" />
+            <IsoBox x={-22} y={10} z={55} w={5} d={5} h={5} className="box-char-skin" />
           </div>
           <div className="char-limb char-head-read">
-            <IsoBox x={-7} y={-8} z={46} w={15} d={16} h={16} className="box-char-skin" />
-            <IsoBox x={-8} y={-9} z={60} w={17} d={18} h={6} className="box-char-hair" />
+            <IsoBox x={-8} y={-8} z={78} w={15} d={16} h={16} className="box-char-skin" />
+            <IsoBox x={-8} y={-9} z={92} w={17} d={18} h={6} className="box-char-hair" />
+            <IsoBox x={4} y={-9} z={80} w={5} d={18} h={12} className="box-char-hair" />
           </div>
         </>
       )}
 
       {!isWalking && activity === 'bed' && (
         <>
-          <IsoBox x={-68} y={-12} z={40} w={48} d={10} h={9} className="box-char-pants" />
-          <IsoBox x={-74} y={-12} z={40} w={7} d={10} h={12} className="box-char-shoe" />
-          <IsoBox x={-68} y={2} z={40} w={48} d={10} h={9} className="box-char-pants" />
-          <IsoBox x={-74} y={2} z={40} w={7} d={10} h={12} className="box-char-shoe" />
-          <IsoBox x={-20} y={-13} z={40} w={46} d={26} h={13} className="box-char-shirt" />
-          <IsoBox x={28} y={-9} z={44} w={18} d={18} h={15} className="box-char-skin" />
-          <IsoBox x={34} y={-10} z={46} w={14} d={20} h={15} className="box-char-hair" />
+          <div className="char-shadow" />
+          {/* Standing facing +x toward the Server Rack & GPU Cluster */}
+          <IsoBox x={-5} y={-10} z={0} w={12} d={8} h={6} className="box-char-shoe" />
+          <IsoBox x={-5} y={-10} z={6} w={9} d={8} h={36} className="box-char-pants" />
+          <IsoBox x={-5} y={2} z={0} w={12} d={8} h={6} className="box-char-shoe" />
+          <IsoBox x={-5} y={2} z={6} w={9} d={8} h={36} className="box-char-pants" />
+          <IsoBox x={-7} y={-12} z={42} w={14} d={24} h={36} className="box-char-shirt" />
+          {/* Arms raised holding diagnostic tablet */}
           <div className="char-limb char-gaming-rig">
-            <IsoBox x={4} y={-17} z={48} w={16} d={6} h={18} className="box-char-shirt" />
-            <IsoBox x={4} y={11} z={48} w={16} d={6} h={18} className="box-char-shirt" />
-            <IsoBox x={2} y={-12} z={62} w={6} d={5} h={5} className="box-char-skin" />
-            <IsoBox x={2} y={7} z={62} w={6} d={5} h={5} className="box-char-skin" />
-            <IsoBox x={0} y={-9} z={64} w={5} d={18} h={10} className="box-char-phone" />
+            <IsoBox x={4} y={-16} z={54} w={16} d={6} h={8} className="box-char-shirt" />
+            <IsoBox x={4} y={10} z={54} w={16} d={6} h={8} className="box-char-shirt" />
+            <IsoBox x={18} y={-11} z={58} w={6} d={22} h={4} className="box-char-phone" />
+          </div>
+          <div className="char-limb char-head-work">
+            <IsoBox x={-7} y={-8} z={78} w={15} d={16} h={16} className="box-char-skin" />
+            <IsoBox x={-9} y={-9} z={92} w={17} d={18} h={6} className="box-char-hair" />
+            <IsoBox x={-9} y={-9} z={80} w={5} d={18} h={12} className="box-char-hair" />
           </div>
         </>
       )}

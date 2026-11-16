@@ -1,0 +1,46 @@
+{
+  "name": "Muhammad Akmal Hakim Ahmad Asmawi",
+  "shortName": "Akmal Hakim",
+  "role": "Data Engineer & AI Developer",
+  "status": "NBDAC, DOSM · MSc IT (UiTM)",
+  "aboutHeading": "About & Technical Skills",
+  "aboutBody": [
+    "Data Engineer and AI Developer specializing in Python-driven ETL orchestration, geospatial analytics, and scalable system architecture.",
+    "Bridges the gap between raw data and actionable insights by engineering pipelines and high-performance portals and systems. Experienced in integrating LLMs and machine learning to automate complex workflows and deliver agentic business intelligence."
+  ],
+  "skillGroups": [
+    {
+      "category": "Data Engineering & ETL",
+      "items": [
+        "Python (Pandas, GeoPandas, Playwright, Selenium)",
+        "SQL",
+        "Dagster",
+        "PostgreSQL"
+      ]
+    },
+    {
+      "category": "AI & Machine Learning",
+      "items": [
+        "Google Gemini API",
+        "Local LLMs & ChromaDB RAG",
+        "Scikit-Learn (DBSCAN, Random Forest, K-Means, TF-IDF)"
+      ]
+    },
+    {
+      "category": "Web Development",
+      "items": [
+        "React",
+        "FastAPI",
+        "JavaScript",
+        "HTML5 & CSS3",
+        "Bootstrap 5",
+        "PHP",
+        "Firebase"
+      ]
+    },
+    {
+      "category": "Visualisation & Languages",
+      "items": ["Tableau", "Power BI", "English", "Bahasa Malaysia"]
+    }
+  ]
+}

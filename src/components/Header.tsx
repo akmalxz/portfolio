@@ -62,6 +62,22 @@ export function Header({ profile }: HeaderProps) {
         </p>
       </div>
 
+      <div className="header-telemetry" aria-label="Core engineering metrics">
+        <span className="telemetry-pill">
+          <span className="telemetry-led" aria-hidden="true" />
+          <span>22M+ PGSQL ROWS</span>
+        </span>
+        <span className="telemetry-pill">
+          <span>&lt;300ms FASTAPI</span>
+        </span>
+        <span className="telemetry-pill">
+          <span>95% DAGSTER SLA</span>
+        </span>
+        <span className="telemetry-pill">
+          <span>32B LOCAL RAG</span>
+        </span>
+      </div>
+
       <div className="header-actions">
         <button
           type="button"

@@ -2,18 +2,18 @@
   color-scheme: light dark;
   --color-scheme: light;
 
-  /* Raw light / dark token pairs */
-  --bg-canvas-light: #dce3ee;
-  --bg-canvas-dark: #090d16;
+  /* Raw light / dark token pairs — Graphite & Electric Cyan Lab Palette */
+  --bg-canvas-light: #e6ebf2;
+  --bg-canvas-dark: #080c14;
 
-  --bg-stage-light: #cdd6e5;
-  --bg-stage-dark: #0e1422;
+  --bg-stage-light: #dae2ec;
+  --bg-stage-dark: #0c121e;
 
   --bg-card-light: #ffffff;
-  --bg-card-dark: #151e30;
+  --bg-card-dark: #111827;
 
-  --bg-pill-light: #eef2f8;
-  --bg-pill-dark: #1b263b;
+  --bg-pill-light: #f1f5f9;
+  --bg-pill-dark: #182234;
 
   --ink-primary-light: #0f172a;
   --ink-primary-dark: #f1f5f9;
@@ -21,40 +21,40 @@
   --ink-secondary-light: #475569;
   --ink-secondary-dark: #94a3b8;
 
-  --border-subtle-light: #bcc7da;
-  --border-subtle-dark: #27344a;
+  --border-subtle-light: #cbd5e1;
+  --border-subtle-dark: #223046;
 
   --border-strong-light: #64748b;
-  --border-strong-dark: #64748b;
+  --border-strong-dark: #475569;
 
-  --accent-light: #2563eb;
-  --accent-dark: #60a5fa;
+  --accent-light: #0284c7;
+  --accent-dark: #38bdf8;
 
-  --wall-left-light: #edf1f8;
-  --wall-left-dark: #1a2336;
+  --wall-left-light: #eef2f7;
+  --wall-left-dark: #151e2e;
 
-  --wall-right-light: #dce4f0;
-  --wall-right-dark: #131b2b;
+  --wall-right-light: #dfe6f0;
+  --wall-right-dark: #0f1726;
 
-  --wall-cap-light: #ffffff;
-  --wall-cap-dark: #2c3a52;
+  --wall-cap-light: #f8fafc;
+  --wall-cap-dark: #263349;
 
-  --floor-top-light: #d3ddeb;
-  --floor-top-dark: #182234;
+  --floor-top-light: #d5dee9;
+  --floor-top-dark: #131b2b;
 
-  --floor-front-light: #a6b4ca;
-  --floor-front-dark: #0b101b;
+  --floor-front-light: #94a3b8;
+  --floor-front-dark: #090d16;
 
-  --floor-left-light: #bac7db;
-  --floor-left-dark: #111827;
+  --floor-left-light: #b0bfce;
+  --floor-left-dark: #0d1320;
 
-  --rug-top-light: #c7d2fe;
-  --rug-top-dark: #312e81;
+  --rug-top-light: #cbd5e1;
+  --rug-top-dark: #1a2436;
 
-  --rug-ring-light: #a5b4fc;
-  --rug-ring-dark: #4338ca;
+  --rug-ring-light: #0ea5e9;
+  --rug-ring-dark: #0284c7;
 
-  --white-top-light: #ffffff;
+  --white-top-light: #f8fafc;
   --white-top-dark: #334155;
 
   --white-left-light: #e2e8f0;
@@ -63,56 +63,57 @@
   --white-front-light: #cbd5e1;
   --white-front-dark: #1e293b;
 
-  --slate-top-light: #64748b;
+  --slate-top-light: #475569;
   --slate-top-dark: #475569;
 
-  --slate-left-light: #475569;
+  --slate-left-light: #334155;
   --slate-left-dark: #334155;
 
-  --slate-front-light: #334155;
+  --slate-front-light: #1e293b;
   --slate-front-dark: #1e293b;
 
-  --desk-top-light: #f8fafc;
-  --desk-top-dark: #27344a;
+  --desk-top-light: #f1f5f9;
+  --desk-top-dark: #283548;
 
   --desk-left-light: #cbd5e1;
   --desk-left-dark: #1e293b;
 
   --desk-front-light: #94a3b8;
-  --desk-front-dark: #0f172a;
+  --desk-front-dark: #131c2e;
 
-  --bed-blanket-top-light: #6366f1;
-  --bed-blanket-top-dark: #4f46e5;
+  --bed-blanket-top-light: #334155;
+  --bed-blanket-top-dark: #334155;
 
-  --bed-blanket-left-light: #4f46e5;
-  --bed-blanket-left-dark: #4338ca;
+  --bed-blanket-left-light: #1e293b;
+  --bed-blanket-left-dark: #223046;
 
-  --bed-blanket-front-light: #4338ca;
-  --bed-blanket-front-dark: #3730a3;
+  --bed-blanket-front-light: #0f172a;
+  --bed-blanket-front-dark: #151e2e;
 
-  --window-sky-top-light: #93c5fd;
-  --window-sky-top-dark: #0b1329;
+  --window-sky-top-light: #7dd3fc;
+  --window-sky-top-dark: #081021;
 
   --window-sky-bottom-light: #e0f2fe;
-  --window-sky-bottom-dark: #1e3a5f;
+  --window-sky-bottom-dark: #0c2744;
 
-  --curtain-light: #475569;
-  --curtain-dark: #1e293b;
+  --curtain-light: #334155;
+  --curtain-dark: #151e2e;
 
-  --lamp-glow-light: #f8fafc;
-  --lamp-glow-dark: #bae6fd;
+  --lamp-glow-light: #0ea5e9;
+  --lamp-glow-dark: #38bdf8;
 
-  --shadow-ao-light: rgb(15 23 42 / 0.16);
-  --shadow-ao-dark: rgb(0 0 0 / 0.42);
+  --shadow-ao-light: rgb(15 23 42 / 0.12);
+  --shadow-ao-dark: rgb(2 6 23 / 0.52);
 
-  --ambient-orb-1-light: #93c5fd;
-  --ambient-orb-1-dark: #1e3a8a;
+  /* Ambient background orb tokens */
+  --ambient-orb-1-light: #7dd3fc;
+  --ambient-orb-1-dark: #0369a1;
 
-  --ambient-orb-2-light: #c7d2fe;
-  --ambient-orb-2-dark: #312e81;
+  --ambient-orb-2-light: #94a3b8;
+  --ambient-orb-2-dark: #0f766e;
 
-  --ambient-orb-3-light: #a7f3d0;
-  --ambient-orb-3-dark: #0f4c5c;
+  --ambient-orb-3-light: #bae6fd;
+  --ambient-orb-3-dark: #1e293b;
 
   /* Fallback assignments (light default) */
   --bg-canvas: var(--bg-canvas-light);
@@ -155,7 +156,7 @@
   --ambient-orb-3: var(--ambient-orb-3-light);
 
   --pc-bezel: #0f172a;
-  --pc-screen-bg: #090d16;
+  --pc-screen-bg: #070b12;
   --pc-screen-ink: #f8fafc;
   --pc-screen-accent: #38bdf8;
 

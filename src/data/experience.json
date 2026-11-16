@@ -1,0 +1,74 @@
+[
+  {
+    "id": "exp-nbdac-dosm",
+    "category": "experience",
+    "spineTitle": "NBDAC · DOSM",
+    "title": "Personel MySTEP — Data Engineer & AI Developer",
+    "subtitle": "National Big Data Analytic Centre (NBDAC), DOSM",
+    "period": "Apr 2025 – Current",
+    "summary": "Architecting national-scale Dagster ETL pipelines, geospatial transformations, real-time PostgreSQL analytics dashboards, and LLM dataset workflows.",
+    "metrics": [
+      { "value": "10K+", "label": "records / week" },
+      { "value": "95%", "label": "extraction success" },
+      { "value": "40+ hrs", "label": "saved monthly" }
+    ],
+    "pipeline": [
+      { "stage": "10K+ Weekly Feeds", "detail": "Multi-Source Ingestion" },
+      { "stage": "Dagster + GeoPandas", "detail": "95% Automated Spatial ETL" },
+      { "stage": "PostgreSQL + LLM", "detail": "200K-Row Context Store" },
+      { "stage": "National BI Portal", "detail": "40+ Hrs Saved Monthly" }
+    ],
+    "tradeoff": {
+      "bottleneck": "Fragmented manual scripts required 40+ hours of monthly intervention and struggled with regional geospatial joins.",
+      "decision": "Orchestrated Dagster ETL pipelines with GeoPandas and PostgreSQL — reaching a 95% weekly extraction success rate and powering a 200K-row real-time dashboard."
+    },
+    "highlights": [
+      "Architected automated ETL pipelines and processes via Dagster.",
+      "Achieved a 95% success rate extracting 10,000+ weekly records.",
+      "Managed a centralized data repository, eliminating 40+ hours of manual processing monthly.",
+      "Conducted geospatial data transformations using Pandas and GeoPandas for regional analysis.",
+      "Built a real-time analytic dashboard processing 200,000+ records directly from PostgreSQL.",
+      "Integrated LLM models to retrieve, process, and elaborate on raw dataset context.",
+      "Authored comprehensive technical documentation for all engineered data systems."
+    ],
+    "tags": ["Dagster", "Python", "Pandas", "GeoPandas", "PostgreSQL", "LLMs"],
+    "tone": "charcoal",
+    "height": "tall",
+    "thickness": "thick",
+    "callNumber": "EXP·01"
+  },
+  {
+    "id": "exp-utp-researcher",
+    "category": "experience",
+    "spineTitle": "Researcher · UTP",
+    "title": "Researcher",
+    "subtitle": "Universiti Teknologi PETRONAS (UTP)",
+    "period": "Nov 2024 – Apr 2025",
+    "summary": "Quantitative machine learning research on digital learning trends across large MOOC datasets, producing academic publications and grant proposals.",
+    "metrics": [
+      { "value": "5,000", "label": "datasets analysed" },
+      { "value": "2", "label": "papers & proposals" }
+    ],
+    "pipeline": [
+      { "stage": "5,000 MOOC Datasets", "detail": "Secondary Learning Logs" },
+      { "stage": "Python Feature Eng", "detail": "Custom Evaluation Pipeline" },
+      { "stage": "RF & K-Means ML", "detail": "Scikit-Learn Clustering" },
+      { "stage": "2 Papers & Grants", "detail": "Published Findings" }
+    ],
+    "tradeoff": {
+      "bottleneck": "High-dimensional learner behavior across 5,000 secondary MOOC datasets obscured completion and engagement drivers.",
+      "decision": "Combined unsupervised K-Means segmentation with Random Forest feature importance in Scikit-Learn — grounding 2 peer-reviewed publications and grant proposals."
+    },
+    "highlights": [
+      "Conducted quantitative research on digital learning trends across 5,000 secondary datasets.",
+      "Designed custom Python methodologies to evaluate complex MOOC datasets.",
+      "Developed and trained machine learning models including Random Forest and K-Means clustering.",
+      "Authored 2 academic papers and proposals, including grant funding."
+    ],
+    "tags": ["Python", "Scikit-Learn", "Random Forest", "K-Means", "Quantitative Research"],
+    "tone": "mint",
+    "height": "medium",
+    "thickness": "thick",
+    "callNumber": "EXP·02"
+  }
+]

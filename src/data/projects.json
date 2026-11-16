@@ -1,0 +1,170 @@
+[
+  {
+    "id": "proj-demographics",
+    "category": "project",
+    "spineTitle": "Demographics 22M",
+    "title": "Demographics Profiling Dashboard",
+    "subtitle": "Large-Scale National Analytics · PostgreSQL & FastAPI",
+    "period": "Oct 2026",
+    "summary": "High-throughput national demographics analytics platform serving 22M+ records with sub-300ms API latency and rapid AI data filtering.",
+    "metrics": [
+      { "value": "22M+", "label": "records indexed" },
+      { "value": "<300ms", "label": "API latency" },
+      { "value": "40%", "label": "faster SQL" }
+    ],
+    "pipeline": [
+      { "stage": "22M+ Raw Records", "detail": "National Census Source" },
+      { "stage": "PostgreSQL Index", "detail": "Composite B-Tree Schema" },
+      { "stage": "FastAPI Engine", "detail": "<300ms REST Breakdowns" },
+      { "stage": "AI Subset Filter", "detail": "<2s Targeted Extraction" }
+    ],
+    "tradeoff": {
+      "bottleneck": "Unindexed queries and heavy API payloads stalled demographic breakdowns across 22M+ national records.",
+      "decision": "Engineered composite PostgreSQL indexes and stripped extraneous serialization fields — cutting SQL query time by 40% and achieving sub-300ms API latency."
+    },
+    "highlights": [
+      "Migrated and indexed a schema of over 22M national records in PostgreSQL to power large-scale analytics.",
+      "Engineered FastAPI REST endpoints to serve complex data breakdowns with sub-300ms latency.",
+      "Optimized backend processes by stripping extraneous features and improved SQL query performance by 40%.",
+      "Built backend logic for AI data filtering, extracting targeted subsets from 22M records in <2 seconds."
+    ],
+    "tags": ["PostgreSQL", "FastAPI", "Python", "SQL Optimization", "AI Filtering"],
+    "tone": "cobalt",
+    "height": "tall",
+    "thickness": "regular",
+    "callNumber": "PRJ·01"
+  },
+  {
+    "id": "proj-plan-ai",
+    "category": "project",
+    "spineTitle": "Plan-AI 2026",
+    "title": "Plan-AI Hackathon 2026",
+    "subtitle": "Geospatial RAG & Urban Sprawl Forecasting",
+    "period": "Aug 2026",
+    "summary": "End-to-end geospatial intelligence pipeline combining satellite imagery, local 32B LLM legal auditing, and predictive 2030 urban sprawl forecasts.",
+    "metrics": [
+      { "value": "32B", "label": "param local LLM" },
+      { "value": "2030", "label": "sprawl forecast" },
+      { "value": "RAG", "label": "legal auditing" }
+    ],
+    "pipeline": [
+      { "stage": "Sentinel-2 + OSM", "detail": "Satellite & Vector APIs" },
+      { "stage": "Python Geo-ETL", "detail": "Ecological Metric Compute" },
+      { "stage": "ChromaDB + 32B LLM", "detail": "Spatial Legal RAG Audit" },
+      { "stage": "React Forecast UI", "detail": "2030 Urban Sprawl Map" }
+    ],
+    "tradeoff": {
+      "bottleneck": "Manual legal auditing of satellite land-use data could not scale or project long-horizon urban sprawl.",
+      "decision": "Coupled Sentinel-2 and OSM spatial pipelines with a local 32B-parameter LLM over ChromaDB RAG to autonomously audit compliance and forecast 2030 sprawl."
+    },
+    "highlights": [
+      "Engineered a Python pipeline processing Sentinel-2 imagery and live OSM APIs to compute ecological metrics.",
+      "Built a ChromaDB RAG system integrating a 32B-parameter local LLM to autonomously audit spatial legal compliance.",
+      "Architected automated JSON reports and predictive 2030 urban sprawl forecasts delivered to a React dashboard."
+    ],
+    "tags": ["Python", "Sentinel-2", "OSM API", "ChromaDB RAG", "32B Local LLM", "React"],
+    "tone": "teal",
+    "height": "medium",
+    "thickness": "thick",
+    "callNumber": "PRJ·02"
+  },
+  {
+    "id": "proj-rag-chatbot",
+    "category": "project",
+    "spineTitle": "AI Chatbot (RAG)",
+    "title": "AI Chatbot (RAG)",
+    "subtitle": "Gemini-Powered Natural Language BI Assistant",
+    "period": "Mar 2026",
+    "summary": "Enterprise conversational analytics assistant enabling stakeholders to query complex databases and generate visual insights with zero hallucinations.",
+    "metrics": [
+      { "value": "Hours → secs", "label": "report retrieval" },
+      { "value": "100%", "label": "data integrity" }
+    ],
+    "pipeline": [
+      { "stage": "Normalized DBs", "detail": "Multi-Table Enterprise SQL" },
+      { "stage": "Denormalized Layer", "detail": "Zero-Hallucination Context" },
+      { "stage": "Gemini RAG Engine", "detail": "NL-to-Insight Synthesis" },
+      { "stage": "Executive BI View", "detail": "Hours → Seconds Delivery" }
+    ],
+    "tradeoff": {
+      "bottleneck": "Direct LLM querying across normalized relational schemas caused join hallucinations and hours of manual verification.",
+      "decision": "Denormalized target tables into deterministic context views for Gemini RAG — guaranteeing 100% data integrity and shrinking retrieval from hours to seconds."
+    },
+    "highlights": [
+      "Developed a Gemini-powered AI virtual assistant for stakeholders to query complex databases and generate visual insights using natural language.",
+      "Conducted data denormalization to structure raw context and eliminate AI hallucinations with 100% data integrity.",
+      "Reduced executive data retrieval and reporting time from hours to mere seconds."
+    ],
+    "tags": ["Google Gemini API", "RAG", "Data Denormalization", "SQL", "Python"],
+    "tone": "indigo",
+    "height": "tall",
+    "thickness": "regular",
+    "callNumber": "PRJ·03"
+  },
+  {
+    "id": "proj-banci-ekonomi",
+    "category": "project",
+    "spineTitle": "Banci Ekonomi",
+    "title": "Banci Ekonomi (BE) Publication Automation",
+    "subtitle": "Statistical Publication Pipeline · DOSM",
+    "period": "Nov 2025",
+    "summary": "Automated multi-stage statistical publication pipeline that compressed multi-day manual data workflows into minutes with 100% statistical accuracy.",
+    "metrics": [
+      { "value": "90%", "label": "less processing time" },
+      { "value": "100%", "label": "totals preserved" }
+    ],
+    "pipeline": [
+      { "stage": "Raw Survey Feeds", "detail": "Multi-Stage DOSM Inputs" },
+      { "stage": "Pandas Cleansing", "detail": "Automated Schema Checks" },
+      { "stage": "Reconciliation Gate", "detail": "100% Totals Validation" },
+      { "stage": "Publication Output", "detail": "90% Faster Release" }
+    ],
+    "tradeoff": {
+      "bottleneck": "Multi-day manual spreadsheet cleaning and cross-tabulation risked human error across national economic census tables.",
+      "decision": "Automated end-to-end cleaning, validation, and aggregation in Python/Pandas — slashing processing time by 90% while preserving 100% of statistical totals."
+    },
+    "highlights": [
+      "Led automation of a multi-stage statistical publication pipeline including cleaning, validation, and aggregation.",
+      "Slashed publication processing time by up to 90%.",
+      "Transformed multi-day manual tasks into minutes while preserving 100% of statistical totals."
+    ],
+    "tags": ["Python", "Pandas", "ETL Automation", "Data Validation"],
+    "tone": "ice",
+    "height": "short",
+    "thickness": "thin",
+    "callNumber": "PRJ·04"
+  },
+  {
+    "id": "proj-datathon-judging",
+    "category": "project",
+    "spineTitle": "Datathon Judging",
+    "title": "Datathon 2025 Judging System (MDIT x DOSM)",
+    "subtitle": "Real-Time Concurrent Evaluation & Leaderboard Platform",
+    "period": "Aug 2025",
+    "summary": "Concurrency-safe real-time scoring architecture synchronizing multi-judge evaluations into an instant, race-condition-free live leaderboard.",
+    "metrics": [
+      { "value": "Real-time", "label": "live leaderboard" },
+      { "value": "0", "label": "race conditions" }
+    ],
+    "pipeline": [
+      { "stage": "Multi-Judge Inputs", "detail": "Concurrent Score Submits" },
+      { "stage": "LockService Mutex", "detail": "Race-Condition Guard" },
+      { "stage": "Auto-Tabulation", "detail": "Atomic Score Pipeline" },
+      { "stage": "Live Leaderboard", "detail": "Zero-Error Sync UI" }
+    ],
+    "tradeoff": {
+      "bottleneck": "Simultaneous score submissions from multiple judges caused database write collisions and stale leaderboard states.",
+      "decision": "Enforced mutex serialization via LockService around atomic score tabulation — eliminating race conditions for an instant, zero-error live leaderboard."
+    },
+    "highlights": [
+      "Served as Lead Developer in architecting a real-time scoring system for MDIT x DOSM.",
+      "Engineered pipelines to process concurrent evaluations from multiple judges, ensuring seamless real-time data synchronization.",
+      "Utilized LockService to prevent database race conditions, completely automating score tabulation to deliver an instant, error-free leaderboard."
+    ],
+    "tags": ["Real-Time Sync", "Concurrency Control", "LockService", "JavaScript"],
+    "tone": "violet",
+    "height": "medium",
+    "thickness": "regular",
+    "callNumber": "PRJ·05"
+  }
+]
