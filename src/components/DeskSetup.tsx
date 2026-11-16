@@ -1,11 +1,13 @@
 import type { CSSProperties } from 'react';
 import type { ProfileData } from '../data/profile';
+import type { BookEntry } from '../types/library';
 import { IsoBox } from './IsoBox';
 
 interface DeskSetupProps {
   profile: ProfileData;
   isHovered: boolean;
   isZoneHighlighted: boolean;
+  previewBook?: BookEntry | null;
   onHoverChange: (hovered: boolean) => void;
   onOpenPc: () => void;
 }
@@ -14,6 +16,7 @@ export function DeskSetup({
   profile,
   isHovered,
   isZoneHighlighted,
+  previewBook = null,
   onHoverChange,
   onOpenPc,
 }: DeskSetupProps) {
@@ -62,7 +65,10 @@ export function DeskSetup({
       {/* Clickable 3D PC Monitor */}
       <button
         type="button"
-        className={`iso-box iso-pc-button ${isHovered || isZoneHighlighted ? 'is-active' : ''}`}
+        className={`iso-box iso-pc-button ${
+          isHovered || isZoneHighlighted ? 'is-active' : ''
+        } ${previewBook ? 'is-previewing' : ''}`}
+        data-preview-tone={previewBook?.tone}
         style={monitorVars}
         aria-label={`Open About & Technical Skills for ${profile.shortName}`}
         onMouseEnter={() => onHoverChange(true)}
@@ -74,9 +80,21 @@ export function DeskSetup({
         <span className="iso-face iso-face-top" />
         <span className="iso-face iso-face-front iso-pc-screen-face">
           <span className="iso-pc-screen">
-            <span className="iso-pc-bar">skills.py</span>
-            <span className="iso-pc-name">{profile.shortName}</span>
-            <span className="iso-pc-cta">ETL · AI · React →</span>
+            <span className="iso-pc-bar">
+              {previewBook
+                ? `${previewBook.callNumber} · ${previewBook.period}`
+                : 'skills.py'}
+            </span>
+            <span className="iso-pc-name">
+              {previewBook ? previewBook.spineTitle : profile.shortName}
+            </span>
+            <span className="iso-pc-cta">
+              {previewBook
+                ? previewBook.metrics?.[0]
+                  ? `${previewBook.metrics[0].value} ${previewBook.metrics[0].label}`
+                  : 'Click volume →'
+                : 'ETL · AI · React →'}
+            </span>
           </span>
         </span>
         <span className="iso-face iso-face-left" />

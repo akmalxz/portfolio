@@ -26,9 +26,27 @@ export interface BookMetric {
   label: string;
 }
 
+export interface PipelineNode {
+  /** Short stage title, e.g. "Sentinel-2 + OSM" */
+  stage: string;
+  /** Technical sub-caption, e.g. "Spatial Ingestion" */
+  detail: string;
+}
+
+export interface EngineeringTradeoff {
+  /** The bottleneck, risk, or legacy constraint */
+  bottleneck: string;
+  /** The architectural fix and verified outcome */
+  decision: string;
+}
+
 export interface BookEntry {
   /** 2–3 headline impact figures surfaced above the details */
   metrics?: BookMetric[];
+  /** Step-by-step system architecture pipeline nodes */
+  pipeline?: PipelineNode[];
+  /** Bottleneck vs. engineering fix breakdown */
+  tradeoff?: EngineeringTradeoff;
   id: string;
   category: ShelfCategory;
   /** Short title printed on the spine */

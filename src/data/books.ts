@@ -19,7 +19,23 @@ export const BOOKS: BookEntry[] = [
   // Shelf 1: Key Projects (5 volumes)
   {
     id: 'proj-demographics',
-    metrics: [{ value: '22M+', label: 'records indexed' }, { value: '<300ms', label: 'API latency' }, { value: '40%', label: 'faster SQL' }],
+    metrics: [
+      { value: '22M+', label: 'records indexed' },
+      { value: '<300ms', label: 'API latency' },
+      { value: '40%', label: 'faster SQL' },
+    ],
+    pipeline: [
+      { stage: '22M+ Raw Records', detail: 'National Census Source' },
+      { stage: 'PostgreSQL Index', detail: 'Composite B-Tree Schema' },
+      { stage: 'FastAPI Engine', detail: '<300ms REST Breakdowns' },
+      { stage: 'AI Subset Filter', detail: '<2s Targeted Extraction' },
+    ],
+    tradeoff: {
+      bottleneck:
+        'Unindexed queries and heavy API payloads stalled demographic breakdowns across 22M+ national records.',
+      decision:
+        'Engineered composite PostgreSQL indexes and stripped extraneous serialization fields — cutting SQL query time by 40% and achieving sub-300ms API latency.',
+    },
     category: 'project',
     spineTitle: 'Demographics 22M',
     title: 'Demographics Profiling Dashboard',
@@ -41,7 +57,23 @@ export const BOOKS: BookEntry[] = [
   },
   {
     id: 'proj-plan-ai',
-    metrics: [{ value: '32B', label: 'param local LLM' }, { value: '2030', label: 'sprawl forecast' }, { value: 'RAG', label: 'legal auditing' }],
+    metrics: [
+      { value: '32B', label: 'param local LLM' },
+      { value: '2030', label: 'sprawl forecast' },
+      { value: 'RAG', label: 'legal auditing' },
+    ],
+    pipeline: [
+      { stage: 'Sentinel-2 + OSM', detail: 'Satellite & Vector APIs' },
+      { stage: 'Python Geo-ETL', detail: 'Ecological Metric Compute' },
+      { stage: 'ChromaDB + 32B LLM', detail: 'Spatial Legal RAG Audit' },
+      { stage: 'React Forecast UI', detail: '2030 Urban Sprawl Map' },
+    ],
+    tradeoff: {
+      bottleneck:
+        'Manual legal auditing of satellite land-use data could not scale or project long-horizon urban sprawl.',
+      decision:
+        'Coupled Sentinel-2 and OSM spatial pipelines with a local 32B-parameter LLM over ChromaDB RAG to autonomously audit compliance and forecast 2030 sprawl.',
+    },
     category: 'project',
     spineTitle: 'Plan-AI 2026',
     title: 'Plan-AI Hackathon 2026',
@@ -62,7 +94,22 @@ export const BOOKS: BookEntry[] = [
   },
   {
     id: 'proj-rag-chatbot',
-    metrics: [{ value: 'Hours → secs', label: 'report retrieval' }, { value: '100%', label: 'data integrity' }],
+    metrics: [
+      { value: 'Hours → secs', label: 'report retrieval' },
+      { value: '100%', label: 'data integrity' },
+    ],
+    pipeline: [
+      { stage: 'Normalized DBs', detail: 'Multi-Table Enterprise SQL' },
+      { stage: 'Denormalized Layer', detail: 'Zero-Hallucination Context' },
+      { stage: 'Gemini RAG Engine', detail: 'NL-to-Insight Synthesis' },
+      { stage: 'Executive BI View', detail: 'Hours → Seconds Delivery' },
+    ],
+    tradeoff: {
+      bottleneck:
+        'Direct LLM querying across normalized relational schemas caused join hallucinations and hours of manual verification.',
+      decision:
+        'Denormalized target tables into deterministic context views for Gemini RAG — guaranteeing 100% data integrity and shrinking retrieval from hours to seconds.',
+    },
     category: 'project',
     spineTitle: 'AI Chatbot (RAG)',
     title: 'AI Chatbot (RAG)',
@@ -83,7 +130,22 @@ export const BOOKS: BookEntry[] = [
   },
   {
     id: 'proj-banci-ekonomi',
-    metrics: [{ value: '90%', label: 'less processing time' }, { value: '100%', label: 'totals preserved' }],
+    metrics: [
+      { value: '90%', label: 'less processing time' },
+      { value: '100%', label: 'totals preserved' },
+    ],
+    pipeline: [
+      { stage: 'Raw Survey Feeds', detail: 'Multi-Stage DOSM Inputs' },
+      { stage: 'Pandas Cleansing', detail: 'Automated Schema Checks' },
+      { stage: 'Reconciliation Gate', detail: '100% Totals Validation' },
+      { stage: 'Publication Output', detail: '90% Faster Release' },
+    ],
+    tradeoff: {
+      bottleneck:
+        'Multi-day manual spreadsheet cleaning and cross-tabulation risked human error across national economic census tables.',
+      decision:
+        'Automated end-to-end cleaning, validation, and aggregation in Python/Pandas — slashing processing time by 90% while preserving 100% of statistical totals.',
+    },
     category: 'project',
     spineTitle: 'Banci Ekonomi',
     title: 'Banci Ekonomi (BE) Publication Automation',
@@ -104,7 +166,22 @@ export const BOOKS: BookEntry[] = [
   },
   {
     id: 'proj-datathon-judging',
-    metrics: [{ value: 'Real-time', label: 'live leaderboard' }, { value: '0', label: 'race conditions' }],
+    metrics: [
+      { value: 'Real-time', label: 'live leaderboard' },
+      { value: '0', label: 'race conditions' },
+    ],
+    pipeline: [
+      { stage: 'Multi-Judge Inputs', detail: 'Concurrent Score Submits' },
+      { stage: 'LockService Mutex', detail: 'Race-Condition Guard' },
+      { stage: 'Auto-Tabulation', detail: 'Atomic Score Pipeline' },
+      { stage: 'Live Leaderboard', detail: 'Zero-Error Sync UI' },
+    ],
+    tradeoff: {
+      bottleneck:
+        'Simultaneous score submissions from multiple judges caused database write collisions and stale leaderboard states.',
+      decision:
+        'Enforced mutex serialization via LockService around atomic score tabulation — eliminating race conditions for an instant, zero-error live leaderboard.',
+    },
     category: 'project',
     spineTitle: 'Datathon Judging',
     title: 'Datathon 2025 Judging System (MDIT x DOSM)',
@@ -127,7 +204,23 @@ export const BOOKS: BookEntry[] = [
   // Shelf 2: Professional Experience (2 volumes)
   {
     id: 'exp-nbdac-dosm',
-    metrics: [{ value: '10K+', label: 'records / week' }, { value: '95%', label: 'extraction success' }, { value: '40+ hrs', label: 'saved monthly' }],
+    metrics: [
+      { value: '10K+', label: 'records / week' },
+      { value: '95%', label: 'extraction success' },
+      { value: '40+ hrs', label: 'saved monthly' },
+    ],
+    pipeline: [
+      { stage: '10K+ Weekly Feeds', detail: 'Multi-Source Ingestion' },
+      { stage: 'Dagster + GeoPandas', detail: '95% Automated Spatial ETL' },
+      { stage: 'PostgreSQL + LLM', detail: '200K-Row Context Store' },
+      { stage: 'National BI Portal', detail: '40+ Hrs Saved Monthly' },
+    ],
+    tradeoff: {
+      bottleneck:
+        'Fragmented manual scripts required 40+ hours of monthly intervention and struggled with regional geospatial joins.',
+      decision:
+        'Orchestrated Dagster ETL pipelines with GeoPandas and PostgreSQL — reaching a 95% weekly extraction success rate and powering a 200K-row real-time dashboard.',
+    },
     category: 'experience',
     spineTitle: 'NBDAC · DOSM',
     title: 'Personel MySTEP — Data Engineer & AI Developer',
@@ -152,7 +245,22 @@ export const BOOKS: BookEntry[] = [
   },
   {
     id: 'exp-utp-researcher',
-    metrics: [{ value: '5,000', label: 'datasets analysed' }, { value: '2', label: 'papers & proposals' }],
+    metrics: [
+      { value: '5,000', label: 'datasets analysed' },
+      { value: '2', label: 'papers & proposals' },
+    ],
+    pipeline: [
+      { stage: '5,000 MOOC Datasets', detail: 'Secondary Learning Logs' },
+      { stage: 'Python Feature Eng', detail: 'Custom Evaluation Pipeline' },
+      { stage: 'RF & K-Means ML', detail: 'Scikit-Learn Clustering' },
+      { stage: '2 Papers & Grants', detail: 'Published Findings' },
+    ],
+    tradeoff: {
+      bottleneck:
+        'High-dimensional learner behavior across 5,000 secondary MOOC datasets obscured completion and engagement drivers.',
+      decision:
+        'Combined unsupervised K-Means segmentation with Random Forest feature importance in Scikit-Learn — grounding 2 peer-reviewed publications and grant proposals.',
+    },
     category: 'experience',
     spineTitle: 'Researcher · UTP',
     title: 'Researcher',

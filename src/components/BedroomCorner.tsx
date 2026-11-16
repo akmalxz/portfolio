@@ -68,6 +68,9 @@ export function BedroomCorner({
   ];
 
   const hoveredBook = books.find((b) => b.id === hoveredBookId);
+  const hoveredBookItem = positionedBooks.find(
+    (item) => item.book.id === hoveredBookId,
+  );
   const isProjectsActive =
     hoveredCallout === 'projects' || hoveredBook?.category === 'project';
   const isExperienceActive =
@@ -459,11 +462,51 @@ export function BedroomCorner({
               );
             })}
 
+            {hoveredBookItem && (
+              <div
+                className="shelf-preview-anchor"
+                style={
+                  {
+                    '--preview-x': `${hoveredBookItem.x + hoveredBookItem.w / 2}px`,
+                    '--preview-y': '12px',
+                    '--preview-z': `${hoveredBookItem.z + hoveredBookItem.h + 18}px`,
+                  } as CSSProperties
+                }
+                data-tone={hoveredBookItem.book.tone}
+                aria-hidden="true"
+              >
+                <div className="shelf-preview-card">
+                  <div className="shelf-preview-top">
+                    <span className="shelf-preview-code">
+                      {hoveredBookItem.book.callNumber}
+                    </span>
+                    <span className="shelf-preview-period">
+                      {hoveredBookItem.book.period}
+                    </span>
+                  </div>
+                  <p className="shelf-preview-title">
+                    {hoveredBookItem.book.title}
+                  </p>
+                  {hoveredBookItem.book.metrics &&
+                    hoveredBookItem.book.metrics.length > 0 && (
+                      <div className="shelf-preview-metrics">
+                        {hoveredBookItem.book.metrics.slice(0, 2).map((m) => (
+                          <span key={m.label} className="shelf-preview-metric">
+                            <strong>{m.value}</strong> {m.label}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                </div>
+              </div>
+            )}
+
             {/* Desk + Clickable PC Setup */}
             <DeskSetup
               profile={profile}
               isHovered={isSkillsActive}
               isZoneHighlighted={isSkillsActive}
+              previewBook={hoveredBook ?? null}
               onHoverChange={(active) => {
                 setHoveredBookId(null);
                 setHoveredPc(active);

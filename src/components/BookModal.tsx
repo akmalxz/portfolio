@@ -56,6 +56,53 @@ function EntryCard({ entry, expanded, onToggle, focusRef }: EntryCardProps) {
       <div id={panelId} className="entry-panel" hidden={!expanded}>
         <p className="entry-summary">{entry.summary}</p>
 
+        {entry.pipeline && entry.pipeline.length > 0 && (
+          <div className="entry-arch-block">
+            <h4 className="dialog-subheading">System Architecture Pipeline</h4>
+            <ol
+              className="entry-pipeline"
+              role="list"
+              aria-label="System architecture pipeline"
+            >
+              {entry.pipeline.map((node, index) => (
+                <li key={node.stage} className="pipeline-step">
+                  <div className="pipeline-node">
+                    <span className="pipeline-index">0{index + 1}</span>
+                    <span className="pipeline-stage">{node.stage}</span>
+                    <span className="pipeline-detail">{node.detail}</span>
+                  </div>
+                  {index < entry.pipeline!.length - 1 && (
+                    <span className="pipeline-arrow" aria-hidden="true">
+                      →
+                    </span>
+                  )}
+                </li>
+              ))}
+            </ol>
+          </div>
+        )}
+
+        {entry.tradeoff && (
+          <div
+            className="entry-tradeoff"
+            role="group"
+            aria-label="Engineering challenge and fix"
+          >
+            <div className="tradeoff-col is-bottleneck">
+              <span className="tradeoff-badge is-bottleneck">
+                Bottleneck
+              </span>
+              <p className="tradeoff-text">{entry.tradeoff.bottleneck}</p>
+            </div>
+            <div className="tradeoff-col is-decision">
+              <span className="tradeoff-badge is-decision">
+                Engineering Fix
+              </span>
+              <p className="tradeoff-text">{entry.tradeoff.decision}</p>
+            </div>
+          </div>
+        )}
+
         <h4 className="dialog-subheading">Highlights</h4>
         <ul className="dialog-highlights">
           {entry.highlights.map((item, index) => (
