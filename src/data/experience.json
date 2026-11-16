@@ -4,7 +4,9 @@
     "category": "experience",
     "spineTitle": "NBDAC · DOSM",
     "title": "Personel MySTEP — Data Engineer & AI Developer",
+    "shortTitle": "Personel MySTEP",
     "subtitle": "National Big Data Analytic Centre (NBDAC), DOSM",
+    "shortSubtitle": "NBDAC, DOSM",
     "period": "Apr 2025 – Current",
     "summary": "Architecting national-scale Dagster ETL pipelines, geospatial transformations, real-time PostgreSQL analytics dashboards, and LLM dataset workflows.",
     "metrics": [
@@ -42,7 +44,9 @@
     "category": "experience",
     "spineTitle": "Researcher · UTP",
     "title": "Researcher",
+    "shortTitle": "Researcher",
     "subtitle": "Universiti Teknologi PETRONAS (UTP)",
+    "shortSubtitle": "UTP",
     "period": "Nov 2024 – Apr 2025",
     "summary": "Quantitative machine learning research on digital learning trends across large MOOC datasets, producing academic publications and grant proposals.",
     "metrics": [

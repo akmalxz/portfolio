@@ -53,8 +53,12 @@ export interface BookEntry {
   spineTitle: string;
   /** Full title shown in the reading card */
   title: string;
+  /** Optional shorter title shown in the left sidebar */
+  shortTitle?: string;
   /** Role, company, or short project subtitle */
   subtitle: string;
+  /** Optional shorter workplace/subtitle shown in the left sidebar */
+  shortSubtitle?: string;
   /** Year or date range, e.g. "2025" or "2023 — Present" */
   period: string;
   /** Brief description inside the open reading card */

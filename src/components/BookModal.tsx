@@ -119,7 +119,9 @@ function ProjectWorkbench({ focus, entries }: { focus: BookEntry; entries: BookE
                   aria-current={isSelected ? 'true' : undefined}
                   onClick={() => setSelectedId(entry.id)}
                 >
-                  <span className="workbench-item-title">{entry.title}</span>
+                  <span className="workbench-item-title">
+                    {entry.shortTitle?.trim() || entry.title}
+                  </span>
                   <span className="workbench-item-period">{entry.period}</span>
                 </button>
               </li>
@@ -135,14 +137,8 @@ function ProjectWorkbench({ focus, entries }: { focus: BookEntry; entries: BookE
 }
 
 function ExperienceWorkbench({ focus, entries }: { focus: BookEntry; entries: BookEntry[] }) {
-  // Order chronologically left-to-right so the latest/current role sits on the right
-  const chronological = [...entries].reverse();
   const [selectedId, setSelectedId] = useState<string>(focus.id);
-  const activeIndex = Math.max(
-    0,
-    chronological.findIndex((entry) => entry.id === selectedId),
-  );
-  const activeEntry = chronological[activeIndex] ?? chronological[chronological.length - 1];
+  const activeEntry = entries.find((entry) => entry.id === selectedId) ?? entries[0];
 
   useEffect(() => {
     setSelectedId(focus.id);
@@ -150,42 +146,31 @@ function ExperienceWorkbench({ focus, entries }: { focus: BookEntry; entries: Bo
 
   if (!activeEntry) return null;
 
-  const progressPercent = ((activeIndex + 0.5) / Math.max(1, chronological.length)) * 100;
-
   return (
-    <div className="experience-workbench">
-      {/* Clean Horizontal Career Timeline */}
-      <nav className="exp-timeline-bar" aria-label="Work experience timeline">
-        <div className="exp-timeline-rail" aria-hidden="true">
-          <div
-            className="exp-timeline-fill"
-            style={{ width: `${progressPercent}%` }}
-          />
-          <div
-            className="exp-timeline-runner"
-            style={{ left: `${progressPercent}%` }}
-          />
-        </div>
-
-        <ol className="exp-timeline-nodes" role="list">
-          {chronological.map((entry, idx) => {
+    <div className="project-workbench">
+      {/* Left Vertical Timeline Sidebar (matches Education vertical rail) */}
+      <nav className="workbench-sidebar" aria-label="Work experience timeline">
+        <ol className="exp-vtimeline" role="list">
+          {entries.map((entry, idx) => {
             const isSelected = entry.id === activeEntry.id;
-            const isPassed = idx <= activeIndex;
             return (
-              <li key={entry.id} className="exp-timeline-step">
+              <li
+                key={entry.id}
+                className={`exp-vstep ${isSelected ? 'is-selected' : ''} ${idx === 0 ? 'is-latest' : ''}`}
+              >
+                <span className="exp-vdot" aria-hidden="true" />
                 <button
                   type="button"
-                  className={`exp-timeline-node ${isSelected ? 'is-selected' : ''} ${isPassed ? 'is-passed' : ''}`}
+                  className={`workbench-item exp-vitem ${isSelected ? 'is-selected' : ''}`}
                   aria-current={isSelected ? 'true' : undefined}
                   onClick={() => setSelectedId(entry.id)}
                 >
-                  <span className="exp-node-marker" aria-hidden="true">
-                    <span className="exp-node-core" />
+                  <span className="workbench-item-period">{entry.period}</span>
+                  <span className="workbench-item-title">
+                    {entry.shortTitle?.trim() || entry.title}
                   </span>
-                  <span className="exp-node-card">
-                    <span className="exp-role-period">{entry.period}</span>
-                    <span className="exp-role-title">{entry.title}</span>
-                    <span className="exp-role-sub">{entry.subtitle}</span>
+                  <span className="exp-vsub">
+                    {entry.shortSubtitle?.trim() || entry.subtitle}
                   </span>
                 </button>
               </li>

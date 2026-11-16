@@ -125,7 +125,11 @@ export function PcModal({ activeTab, profile, onClose }: PcModalProps) {
       open={activeTab !== null}
       labelledBy={titleId}
       onClose={onClose}
-      className={activeTab === 'education' ? 'room-dialog-editorial' : undefined}
+      className={
+        activeTab === 'education' || activeTab === 'skills' || activeTab === 'contact'
+          ? 'room-dialog-editorial'
+          : undefined
+      }
     >
       {activeTab && (
         <DialogFrame
@@ -135,34 +139,38 @@ export function PcModal({ activeTab, profile, onClose }: PcModalProps) {
           summary={current.summary}
         >
           {activeTab === 'skills' && (
-            <>
+            <div className="editorial-tab-stack">
               <div className="dialog-prose">
                 {profile.aboutBody.map((paragraph, index) => (
-                  <p key={index} className="dialog-summary">
+                  <p key={index} className="case-summary">
                     {paragraph}
                   </p>
                 ))}
               </div>
 
-              <div className="skill-groups-grid">
+              <dl className="skill-editorial-list">
                 {profile.skillGroups.map((group) => (
-                  <section key={group.category} className="skill-group-card">
-                    <h3 className="dialog-subheading">{group.category}</h3>
-                    <ul className="dialog-tags" role="list">
-                      {group.items.map((item) => {
-                        const { primary, detail } = splitSkill(item);
-                        return (
-                          <li key={item} className="dialog-tag" title={detail}>
-                            {primary}
-                            {detail && <span className="tag-detail">{detail}</span>}
-                          </li>
-                        );
-                      })}
-                    </ul>
-                  </section>
+                  <div key={group.category} className="skill-editorial-row">
+                    <dt className="case-section-title skill-editorial-term">
+                      {group.category}
+                    </dt>
+                    <dd className="skill-editorial-desc">
+                      <ul className="case-tags skill-editorial-tags" role="list">
+                        {group.items.map((item) => {
+                          const { primary, detail } = splitSkill(item);
+                          return (
+                            <li key={item} className="case-tag skill-editorial-tag" title={detail}>
+                              <span className="skill-tag-primary">{primary}</span>
+                              {detail && <span className="skill-tag-detail">{detail}</span>}
+                            </li>
+                          );
+                        })}
+                      </ul>
+                    </dd>
+                  </div>
                 ))}
-              </div>
-            </>
+              </dl>
+            </div>
           )}
 
           {activeTab === 'education' && (
@@ -268,47 +276,48 @@ export function PcModal({ activeTab, profile, onClose }: PcModalProps) {
           )}
 
           {activeTab === 'contact' && (
-            <>
-              <ul className="contact-grid" role="list">
-                {contactChannels.map((channel) => (
-                  <li key={channel.kind} className="contact-tile">
-                    <a
-                      className="contact-link"
-                      href={channel.href}
-                      {...(channel.external
-                        ? { target: '_blank', rel: 'noreferrer' }
-                        : {})}
-                    >
-                      <span className="contact-icon" aria-hidden="true">
-                        {channel.icon}
-                      </span>
-                      <span className="contact-text">
-                        <span className="contact-kind">
-                          {channel.kind}
-                          {channel.external && (
-                            <span aria-hidden="true"> ↗</span>
-                          )}
-                          {channel.external && (
-                            <span className="visually-hidden"> (opens in new tab)</span>
-                          )}
-                        </span>
-                        <span className="contact-value">{channel.value}</span>
-                      </span>
-                    </a>
-                    <CopyButton value={channel.value} label={channel.kind} />
-                  </li>
-                ))}
-              </ul>
+            <div className="editorial-tab-stack">
+              <section aria-label="Direct contact channels">
+                <h3 className="case-section-title">Direct Channels</h3>
+                <ul className="contact-editorial-list" role="list">
+                  {contactChannels.map((channel) => (
+                    <li key={channel.kind} className="contact-editorial-row">
+                      <span className="contact-editorial-kind">{channel.kind}</span>
+                      <a
+                        className="contact-editorial-link"
+                        href={channel.href}
+                        {...(channel.external
+                          ? { target: '_blank', rel: 'noopener noreferrer' }
+                          : {})}
+                      >
+                        <span>{channel.value}</span>
+                        {channel.external && (
+                          <span aria-hidden="true">↗</span>
+                        )}
+                        {channel.external && (
+                          <span className="visually-hidden"> (opens in new tab)</span>
+                        )}
+                      </a>
+                      <CopyButton value={channel.value} label={channel.kind} />
+                    </li>
+                  ))}
+                </ul>
+              </section>
 
-              <section>
-                <h3 className="dialog-subheading">References</h3>
-                <ul className="reference-grid" role="list">
-                  {profile.references.map((ref) => (
-                    <li key={ref.email} className="reference-card">
-                      <p className="entry-title">{ref.name}</p>
-                      <p className="entry-subtitle">{ref.role}</p>
-                      <p className="reference-org">{ref.organization}</p>
-                      <div className="reference-actions">
+              <section className="case-section" aria-label="Academic and professional references">
+                <h3 className="case-section-title">References</h3>
+                <ul className="reference-editorial-grid" role="list">
+                  {profile.references.map((ref, idx) => (
+                    <li
+                      key={ref.email}
+                      className={`case-tradeoff-item reference-editorial-item ${
+                        idx === 0 ? 'is-solution' : ''
+                      }`}
+                    >
+                      <p className="case-meta">{ref.role}</p>
+                      <p className="reference-editorial-name">{ref.name}</p>
+                      <p className="reference-editorial-org">{ref.organization}</p>
+                      <div className="reference-editorial-actions">
                         <a href={`mailto:${ref.email}`} className="info-card-link">
                           {ref.email}
                         </a>
@@ -318,7 +327,7 @@ export function PcModal({ activeTab, profile, onClose }: PcModalProps) {
                   ))}
                 </ul>
               </section>
-            </>
+            </div>
           )}
         </DialogFrame>
       )}
