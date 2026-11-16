@@ -1,5 +1,8 @@
 import { useEffect, useRef, useState, type CSSProperties } from 'react';
+import { findRoomPath, type RoomPoint } from '../utils/roomPathfinding';
 import { IsoBox } from './IsoBox';
+
+export type { RoomPoint };
 
 export type CharacterActivity =
   | 'desktop'
@@ -10,16 +13,10 @@ export type CharacterActivity =
 
 type CharacterPhase =
   | 'performing'
-  | 'walking_to_hub'
   | 'walking_to_target'
   | 'walking_to_custom'
   | 'custom_idle'
   | 'returning_to_last';
-
-export interface RoomPoint {
-  x: number;
-  y: number;
-}
 
 export interface WalkTarget extends RoomPoint {
   seq: number;
@@ -32,8 +29,6 @@ const ACTIVITIES: readonly CharacterActivity[] = [
   'bed',
   'window',
 ];
-
-const HUB_POS: RoomPoint = { x: 300, y: 156 };
 
 const STAND_POS: Record<CharacterActivity, RoomPoint> = {
   desktop: { x: 162, y: 136 },
@@ -175,81 +170,65 @@ export function RoomCharacter({ walkTarget = null }: RoomCharacterProps) {
   const [phase, setPhase] = useState<CharacterPhase>('performing');
   const [walkPos, setWalkPos] = useState<RoomPoint>(STAND_POS.window);
   const [walkDurationMs, setWalkDurationMs] = useState<number>(950);
-  const [walkYawDeg, setWalkYawDeg] = useState<number>(0);
+  const [walkEasing, setWalkEasing] = useState<string>('cubic-bezier(0.35, 0, 0.25, 1)');
+  const [walkYawDeg, setWalkYawDeg] = useState<number>(-90);
 
   const currentPosRef = useRef<RoomPoint>(STAND_POS.window);
   const lastActivityRef = useRef<CharacterActivity>('window');
-  const walkDurationRef = useRef<number>(950);
+  const customDestRef = useRef<RoomPoint>(STAND_POS.window);
+  const handledSeqRef = useRef<number>(0);
   const yawRef = useRef<number>(-90);
-  const customSeqRef = useRef<number>(0);
+  const segStartRef = useRef<RoomPoint>(STAND_POS.window);
+  const segEndRef = useRef<RoomPoint>(STAND_POS.window);
+  const segStartTimeRef = useRef<number>(0);
+  const segDurationRef = useRef<number>(0);
 
-  const startWalkTo = (destination: RoomPoint) => {
-    const from = currentPosRef.current;
-    const { durationMs, yawDeg } = getWalkMetrics(from, destination, yawRef.current);
-    walkDurationRef.current = durationMs;
-    yawRef.current = yawDeg;
-    setWalkDurationMs(durationMs);
-    setWalkYawDeg(yawDeg);
-
-    let rafInnerId = 0;
-    const rafOuterId = window.requestAnimationFrame(() => {
-      rafInnerId = window.requestAnimationFrame(() => {
-        currentPosRef.current = destination;
-        setWalkPos(destination);
-      });
-    });
-
+  const getLivePos = (): RoomPoint => {
+    if (segDurationRef.current <= 0) return currentPosRef.current;
+    const elapsed = performance.now() - segStartTimeRef.current;
+    const t = Math.min(1, Math.max(0, elapsed / segDurationRef.current));
     return {
-      durationMs,
-      cancelRaf: () => {
-        window.cancelAnimationFrame(rafOuterId);
-        if (rafInnerId) window.cancelAnimationFrame(rafInnerId);
-      },
+      x: Math.round(segStartRef.current.x + (segEndRef.current.x - segStartRef.current.x) * t),
+      y: Math.round(segStartRef.current.y + (segEndRef.current.y - segStartRef.current.y) * t),
     };
   };
 
-  // Handle user click-to-move anywhere in the room
+  // Handle user click-to-move anywhere on the walkable floor
   useEffect(() => {
     if (!walkTarget) return;
-    customSeqRef.current = walkTarget.seq;
+    handledSeqRef.current = walkTarget.seq;
+
     if (phase === 'performing') {
       lastActivityRef.current = activity;
-      currentPosRef.current = STAND_POS[activity];
-      setWalkPos(STAND_POS[activity]);
-    } else if (phase === 'walking_to_hub' || phase === 'walking_to_target') {
+      const startPt = STAND_POS[activity];
+      currentPosRef.current = startPt;
+      setWalkDurationMs(0);
+      setWalkPos(startPt);
+    } else if (phase === 'walking_to_target') {
       lastActivityRef.current = targetActivity;
+      const live = getLivePos();
+      currentPosRef.current = live;
+      setWalkDurationMs(0);
+      setWalkPos(live);
+    } else if (phase === 'walking_to_custom' || phase === 'returning_to_last') {
+      const live = getLivePos();
+      currentPosRef.current = live;
+      setWalkDurationMs(0);
+      setWalkPos(live);
+    } else {
+      setWalkDurationMs(0);
     }
 
-    const destination = { x: walkTarget.x, y: walkTarget.y };
-    const { durationMs, yawDeg } = getWalkMetrics(
-      currentPosRef.current,
-      destination,
-      yawRef.current,
-    );
-    walkDurationRef.current = durationMs;
-    yawRef.current = yawDeg;
-    setWalkDurationMs(durationMs);
-    setWalkYawDeg(yawDeg);
+    customDestRef.current = { x: walkTarget.x, y: walkTarget.y };
     setPhase('walking_to_custom');
-
-    let rafInner = 0;
-    const rafOuter = window.requestAnimationFrame(() => {
-      rafInner = window.requestAnimationFrame(() => {
-        currentPosRef.current = destination;
-        setWalkPos(destination);
-      });
-    });
-
-    return () => {
-      window.cancelAnimationFrame(rafOuter);
-      if (rafInner) window.cancelAnimationFrame(rafInner);
-    };
   }, [walkTarget]);
 
   useEffect(() => {
     if (phase === 'performing') {
+      if (walkTarget && walkTarget.seq === handledSeqRef.current) return;
       lastActivityRef.current = activity;
       currentPosRef.current = PERFORM_POS[activity];
+      segDurationRef.current = 0;
       const dwellMs =
         MIN_DWELL_MS + Math.random() * (MAX_DWELL_MS - MIN_DWELL_MS);
       const timerId = window.setTimeout(() => {
@@ -257,22 +236,16 @@ export function RoomCharacter({ walkTarget = null }: RoomCharacterProps) {
         const next = candidates[Math.floor(Math.random() * candidates.length)];
         setTargetActivity(next);
         currentPosRef.current = STAND_POS[activity];
+        setWalkDurationMs(0);
         setWalkPos(STAND_POS[activity]);
-        setPhase('walking_to_hub');
+        setPhase('walking_to_target');
       }, dwellMs);
 
       return () => window.clearTimeout(timerId);
     }
 
-    if (phase === 'walking_to_custom') {
-      const timerId = window.setTimeout(() => {
-        setPhase('custom_idle');
-      }, walkDurationRef.current + 30);
-
-      return () => window.clearTimeout(timerId);
-    }
-
     if (phase === 'custom_idle') {
+      segDurationRef.current = 0;
       const timerId = window.setTimeout(() => {
         setPhase('returning_to_last');
       }, CUSTOM_IDLE_FALLBACK_MS);
@@ -280,50 +253,88 @@ export function RoomCharacter({ walkTarget = null }: RoomCharacterProps) {
       return () => window.clearTimeout(timerId);
     }
 
-    if (phase === 'returning_to_last') {
+    // Shared multi-waypoint obstacle-avoiding path runner
+    let destination: RoomPoint;
+    let onArrival: () => void;
+
+    if (phase === 'walking_to_custom') {
+      destination = customDestRef.current;
+      onArrival = () => setPhase('custom_idle');
+    } else if (phase === 'returning_to_last') {
       const lastAct = lastActivityRef.current;
-      const { durationMs, cancelRaf } = startWalkTo(STAND_POS[lastAct]);
-      const timerId = window.setTimeout(() => {
+      destination = STAND_POS[lastAct];
+      onArrival = () => {
         currentPosRef.current = PERFORM_POS[lastAct];
         setActivity(lastAct);
         setTargetActivity(lastAct);
         setPhase('performing');
-      }, durationMs + 30);
-
-      return () => {
-        cancelRaf();
-        window.clearTimeout(timerId);
+      };
+    } else {
+      destination = STAND_POS[targetActivity];
+      onArrival = () => {
+        currentPosRef.current = PERFORM_POS[targetActivity];
+        setActivity(targetActivity);
+        setPhase('performing');
       };
     }
 
-    if (phase === 'walking_to_hub') {
-      const { durationMs, cancelRaf } = startWalkTo(HUB_POS);
-      const timerId = window.setTimeout(() => {
-        setPhase('walking_to_target');
-      }, durationMs + 30);
+    const waypoints = findRoomPath(currentPosRef.current, destination);
+    let stepIndex = 0;
+    let rafOuterId = 0;
+    let rafInnerId = 0;
+    let timerId = 0;
+    let cancelled = false;
 
-      return () => {
-        cancelRaf();
-        window.clearTimeout(timerId);
-      };
-    }
+    const runNextSegment = () => {
+      if (cancelled) return;
+      const from = currentPosRef.current;
+      const to = waypoints[stepIndex];
+      const isLast = stepIndex === waypoints.length - 1;
+      const { durationMs, yawDeg } = getWalkMetrics(from, to, yawRef.current);
 
-    // walking_to_target
-    const { durationMs, cancelRaf } = startWalkTo(STAND_POS[targetActivity]);
-    const timerId = window.setTimeout(() => {
-      currentPosRef.current = PERFORM_POS[targetActivity];
-      setActivity(targetActivity);
-      setPhase('performing');
-    }, durationMs + 30);
+      yawRef.current = yawDeg;
+      setWalkYawDeg(yawDeg);
+
+      rafOuterId = window.requestAnimationFrame(() => {
+        rafInnerId = window.requestAnimationFrame(() => {
+          if (cancelled) return;
+          segStartRef.current = from;
+          segEndRef.current = to;
+          segStartTimeRef.current = performance.now();
+          segDurationRef.current = durationMs;
+          currentPosRef.current = to;
+
+          setWalkDurationMs(durationMs);
+          setWalkEasing(isLast ? 'cubic-bezier(0.25, 0.1, 0.25, 1)' : 'linear');
+          setWalkPos(to);
+
+          timerId = window.setTimeout(
+            () => {
+              if (cancelled) return;
+              if (isLast) {
+                onArrival();
+              } else {
+                stepIndex += 1;
+                runNextSegment();
+              }
+            },
+            isLast ? durationMs + 30 : durationMs,
+          );
+        });
+      });
+    };
+
+    runNextSegment();
 
     return () => {
-      cancelRaf();
-      window.clearTimeout(timerId);
+      cancelled = true;
+      window.cancelAnimationFrame(rafOuterId);
+      if (rafInnerId) window.cancelAnimationFrame(rafInnerId);
+      if (timerId) window.clearTimeout(timerId);
     };
   }, [phase, activity, targetActivity, walkTarget?.seq]);
 
   const isWalking =
-    phase === 'walking_to_hub' ||
     phase === 'walking_to_target' ||
     phase === 'walking_to_custom' ||
     phase === 'returning_to_last';
@@ -333,6 +344,7 @@ export function RoomCharacter({ walkTarget = null }: RoomCharacterProps) {
     '--char-x': `${anchorPos.x}px`,
     '--char-y': `${anchorPos.y}px`,
     '--walk-duration': `${walkDurationMs}ms`,
+    '--walk-easing': walkEasing,
     '--char-yaw': `${walkYawDeg}deg`,
   } as CSSProperties;
 
