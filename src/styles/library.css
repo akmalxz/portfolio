@@ -557,7 +557,7 @@
 
 .callout-experience {
   left: 8px;
-  top: 432px;
+  top: 180px;
 }
 
 .callout-skills {
@@ -1258,6 +1258,77 @@
   box-shadow: 0 0 6px rgb(16 185 129 / 0.45);
 }
 
+/* 3D Hinged Server Rack Door (Education Rack 1) */
+.server-rack-face.is-bay-interior {
+  box-shadow: inset 0 0 14px rgb(2 6 23 / 0.75);
+}
+
+.server-rack-door-hinge {
+  --rack-y: 64px;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 0;
+  height: 0;
+  transform-style: preserve-3d;
+  transform: translate3d(463px, var(--rack-y), 12px) rotateZ(0deg);
+  transition: transform 0.52s cubic-bezier(0.22, 1, 0.36, 1);
+  pointer-events: none;
+}
+
+.server-rack-door-hinge.is-open {
+  transform: translate3d(463px, var(--rack-y), 12px) rotateZ(108deg);
+}
+
+.server-rack-door {
+  position: absolute;
+  left: 0;
+  top: -112px;
+  width: 58px;
+  height: 112px;
+  box-sizing: border-box;
+  border: 1.5px solid rgb(148 163 184 / 0.42);
+  background: linear-gradient(
+    180deg,
+    rgb(15 23 42 / 0.72) 0%,
+    rgb(15 23 42 / 0.56) 100%
+  );
+  transform-origin: bottom left;
+  transform: rotateZ(90deg) rotateX(-90deg);
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 5px;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.server-rack-door-hinge.is-open .server-rack-door {
+  border-color: rgb(56 189 248 / 0.72);
+  box-shadow: 0 0 12px rgb(56 189 248 / 0.28);
+}
+
+.rack-door-mesh {
+  position: absolute;
+  inset: 5px 8px 5px 5px;
+  border: 1px solid rgb(148 163 184 / 0.22);
+  background-image: repeating-linear-gradient(
+    0deg,
+    rgb(148 163 184 / 0.14) 0px,
+    rgb(148 163 184 / 0.14) 1px,
+    transparent 1px,
+    transparent 4px
+  );
+}
+
+.rack-door-handle {
+  position: relative;
+  width: 2px;
+  height: 16px;
+  border-radius: 1px;
+  background-color: #7dd3fc;
+  box-shadow: 0 0 6px rgb(56 189 248 / 0.65);
+}
+
 /* Glowing Fiber-Optic Wires Connecting Server Racks to Pipeline Screen */
 .server-wire {
   position: absolute;
@@ -1430,6 +1501,47 @@
 
 .side-log-line.is-emerald {
   width: 64%;
+  background-color: #10b981;
+}
+
+.side-monitor-screen.is-metrics {
+  justify-content: space-between;
+}
+
+.side-metric-row {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.side-metric-dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  background-color: #10b981;
+  box-shadow: 0 0 4px rgb(16 185 129 / 0.75);
+}
+
+.side-mini-bars {
+  flex: 1;
+  display: flex;
+  align-items: flex-end;
+  gap: 2.5px;
+  padding-block: 2px;
+}
+
+.side-bar {
+  flex: 1;
+  border-radius: 1px 1px 0 0;
+  background-color: #475569;
+}
+
+.side-bar.is-cyan {
+  background-color: #38bdf8;
+}
+
+.side-bar.is-emerald {
   background-color: #10b981;
 }
 
@@ -1843,6 +1955,25 @@
 .iso-pc-button:focus-visible,
 .iso-pc-button.is-active {
   translate: 0 0 6px;
+}
+
+.iso-pc-left {
+  transform-origin: right top;
+  transform: translate3d(var(--x), var(--y), var(--z)) rotateZ(-14deg);
+}
+
+.iso-pc-right {
+  transform-origin: left top;
+  transform: translate3d(var(--x), var(--y), var(--z)) rotateZ(14deg);
+}
+
+.iso-pc-screen-telemetry {
+  gap: 3px;
+}
+
+.is-dual-bars {
+  gap: 3px;
+  padding-block: 3px;
 }
 
 .iso-pc-screen-face {

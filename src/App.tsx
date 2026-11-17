@@ -37,6 +37,8 @@ export function App() {
           <BedroomCorner
             profile={PROFILE}
             books={BOOKS}
+            activeSection={activeSection}
+            selectedBook={selectedBook}
             onSelectBook={setSelectedBook}
             onOpenSection={setActiveSection}
           />

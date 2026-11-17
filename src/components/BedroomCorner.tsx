@@ -1,17 +1,77 @@
-import { useState, type MouseEvent } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  type CSSProperties,
+  type MouseEvent,
+} from 'react';
 import type { ProfileData } from '../data/profile';
 import type { BookEntry } from '../types/library';
 import { clampToWalkableFloor } from '../utils/roomPathfinding';
 import { DeskSetup } from './DeskSetup';
 import { IsoBox } from './IsoBox';
 import type { RoomSectionTab } from './PcModal';
-import { RoomCharacter, type WalkTarget } from './RoomCharacter';
+import {
+  RoomCharacter,
+  type AutonomousRack,
+  type ScriptedAction,
+  type WalkTarget,
+} from './RoomCharacter';
 
 interface BedroomCornerProps {
   profile: ProfileData;
   books: BookEntry[];
+  activeSection: RoomSectionTab | null;
+  selectedBook: BookEntry | null;
   onSelectBook: (book: BookEntry) => void;
   onOpenSection: (tab: RoomSectionTab) => void;
+}
+
+type RackSection = 'education' | 'publications' | 'contact';
+type ScriptedSection = RackSection | 'experience' | 'skills' | 'projects';
+type RackStage =
+  | 'idle'
+  | 'walking'
+  | 'opening_door'
+  | 'modal_open'
+  | 'closing_door';
+
+interface RackFlowState {
+  section: ScriptedSection | null;
+  stage: RackStage;
+}
+
+const SECTION_STAND_TARGET: Record<
+  ScriptedSection,
+  {
+    x: number;
+    y: number;
+    faceYawDeg: number;
+    holdPose?: 'desktop' | 'coffee_table' | 'bookshelf';
+  }
+> = {
+  education: { x: 422, y: 94, faceYawDeg: -90 },
+  publications: { x: 422, y: 164, faceYawDeg: -90 },
+  contact: { x: 422, y: 304, faceYawDeg: -90 },
+  experience: { x: 162, y: 136, faceYawDeg: 180, holdPose: 'desktop' },
+  skills: { x: 280, y: 264, faceYawDeg: 90, holdPose: 'coffee_table' },
+  projects: { x: 406, y: 68, faceYawDeg: 165, holdPose: 'bookshelf' },
+};
+
+function ServerRackDoor({ y, isOpen }: { y: number; isOpen: boolean }) {
+  return (
+    <div
+      className={`server-rack-door-hinge ${isOpen ? 'is-open' : ''}`}
+      style={{ '--rack-y': `${y}px` } as CSSProperties}
+      aria-hidden="true"
+    >
+      <div className="server-rack-door">
+        <span className="rack-door-mesh" />
+        <span className="rack-door-handle" />
+      </div>
+    </div>
+  );
 }
 
 type CalloutKey =
@@ -25,6 +85,8 @@ type CalloutKey =
 export function BedroomCorner({
   profile,
   books,
+  activeSection,
+  selectedBook,
   onSelectBook,
   onOpenSection,
 }: BedroomCornerProps) {
@@ -32,8 +94,95 @@ export function BedroomCorner({
   const [hoveredPc, setHoveredPc] = useState(false);
   const [hoveredCallout, setHoveredCallout] = useState<CalloutKey | null>(null);
   const [walkTarget, setWalkTarget] = useState<WalkTarget | null>(null);
+  const [rackFlow, setRackFlow] = useState<RackFlowState>({
+    section: null,
+    stage: 'idle',
+  });
+  const [rackAction, setRackAction] = useState<ScriptedAction | null>(null);
+  const [autoOpenRack, setAutoOpenRack] = useState<AutonomousRack | null>(null);
+  const actionSeqRef = useRef<number>(0);
+
+  const projectBooks = books.filter((b) => b.category === 'project');
+  const experienceBooks = books.filter((b) => b.category === 'experience');
+
+  useEffect(() => {
+    if (rackFlow.stage !== 'opening_door' || !rackFlow.section) return;
+    const targetSection = rackFlow.section;
+    const isServerRack =
+      targetSection === 'education' ||
+      targetSection === 'publications' ||
+      targetSection === 'contact';
+    const delayMs = isServerRack ? 580 : 480;
+    const timerId = window.setTimeout(() => {
+      setRackFlow({ section: targetSection, stage: 'modal_open' });
+      if (targetSection === 'experience') {
+        if (experienceBooks[0]) onSelectBook(experienceBooks[0]);
+      } else if (targetSection === 'projects') {
+        if (projectBooks[0]) onSelectBook(projectBooks[0]);
+      } else {
+        onOpenSection(targetSection);
+      }
+    }, delayMs);
+    return () => window.clearTimeout(timerId);
+  }, [rackFlow, onOpenSection, onSelectBook, experienceBooks, projectBooks]);
+
+  useEffect(() => {
+    if (rackFlow.stage !== 'modal_open' || !rackFlow.section) return;
+    if (rackFlow.section === 'experience') {
+      if (selectedBook?.category !== 'experience') {
+        setRackFlow({ section: null, stage: 'idle' });
+      }
+      return;
+    }
+    if (rackFlow.section === 'projects') {
+      if (selectedBook?.category !== 'project') {
+        setRackFlow({ section: null, stage: 'idle' });
+      }
+      return;
+    }
+    if (rackFlow.section === 'skills') {
+      if (activeSection !== 'skills') {
+        setRackFlow({ section: null, stage: 'idle' });
+      }
+      return;
+    }
+    if (activeSection !== rackFlow.section) {
+      setRackFlow({ section: rackFlow.section, stage: 'closing_door' });
+    }
+  }, [rackFlow, activeSection, selectedBook]);
+
+  useEffect(() => {
+    if (rackFlow.stage !== 'closing_door') return;
+    const timerId = window.setTimeout(() => {
+      setRackFlow({ section: null, stage: 'idle' });
+    }, 520);
+    return () => window.clearTimeout(timerId);
+  }, [rackFlow.stage]);
+
+  const handleRackClick = (section: ScriptedSection) => {
+    if (rackFlow.stage !== 'idle') return;
+    actionSeqRef.current += 1;
+    const target = SECTION_STAND_TARGET[section];
+    setRackFlow({ section, stage: 'walking' });
+    setRackAction({
+      ...target,
+      seq: actionSeqRef.current,
+    });
+  };
+
+  const handleScriptedArrive = useCallback(
+    (seq: number) => {
+      if (rackAction?.seq === seq && rackFlow.stage === 'walking') {
+        setRackFlow((prev) => ({ ...prev, stage: 'opening_door' }));
+      }
+    },
+    [rackAction?.seq, rackFlow.stage],
+  );
 
   const handleFloorClick = (event: MouseEvent<HTMLDivElement>) => {
+    if (rackFlow.stage === 'walking' || rackFlow.stage === 'opening_door') {
+      setRackFlow({ section: null, stage: 'idle' });
+    }
     const { x, y } = clampToWalkableFloor(
       event.nativeEvent.offsetX,
       event.nativeEvent.offsetY,
@@ -41,8 +190,13 @@ export function BedroomCorner({
     setWalkTarget((prev) => ({ x, y, seq: (prev?.seq ?? 0) + 1 }));
   };
 
-  const projectBooks = books.filter((b) => b.category === 'project');
-  const experienceBooks = books.filter((b) => b.category === 'experience');
+  const isRackBusy = (section: ScriptedSection) =>
+    rackFlow.section === section && rackFlow.stage !== 'idle';
+  const isRackDoorOpen = (section: RackSection) =>
+    (rackFlow.section === section &&
+      (rackFlow.stage === 'opening_door' || rackFlow.stage === 'modal_open')) ||
+    (rackFlow.stage === 'idle' && autoOpenRack === section);
+  const isAnyRackBusy = rackFlow.stage !== 'idle';
 
   const hoveredBook = books.find((b) => b.id === hoveredBookId);
   const isProjectsActive =
@@ -86,7 +240,7 @@ export function BedroomCorner({
             <g className={`callout-branch ${isExperienceActive ? 'is-active' : ''}`}>
               <polyline
                 className="callout-line"
-                points="142,352 112,424 112,432"
+                points="142,352 104,280 104,226"
               />
               <circle className="callout-target-ring" cx="142" cy="352" r="7" />
               <circle className="callout-target-dot pin-dot-teal" cx="142" cy="352" r="3.5" />
@@ -329,7 +483,7 @@ export function BedroomCorner({
               h={10}
               className="box-server-plinth"
             />
-            {/* Rack 3 (Education Target): MSc IT Academic Compute Node */}
+            {/* Rack 1 (Education Target): MSc IT Academic Compute Node */}
             <IsoBox
               x={464}
               y={64}
@@ -337,9 +491,9 @@ export function BedroomCorner({
               w={52}
               d={58}
               h={112}
-              className={`box-server-rack ${isEducationActive ? 'is-rack-active' : ''}`}
+              className={`box-server-rack ${isEducationActive || isRackBusy('education') ? 'is-rack-active' : ''}`}
               leftContent={
-                <div className="server-rack-face">
+                <div className="server-rack-face is-bay-interior">
                   <span className="rack-label">UITM · MSC IT</span>
                   <span className="server-blade is-cyan" />
                   <span className="server-blade is-emerald" />
@@ -348,7 +502,9 @@ export function BedroomCorner({
                 </div>
               }
             />
-            {/* Rack 2: Dagster ETL Worker Node (Academic Publications Target) */}
+            <ServerRackDoor y={64} isOpen={isRackDoorOpen('education')} />
+
+            {/* Rack 2 (Academic Publications Target): Dagster ETL Worker Node */}
             <IsoBox
               x={464}
               y={134}
@@ -356,9 +512,9 @@ export function BedroomCorner({
               w={52}
               d={58}
               h={112}
-              className={`box-server-rack ${isPublicationsActive ? 'is-rack-active' : ''}`}
+              className={`box-server-rack ${isPublicationsActive || isRackBusy('publications') ? 'is-rack-active' : ''}`}
               leftContent={
-                <div className="server-rack-face">
+                <div className="server-rack-face is-bay-interior">
                   <span className="rack-label">DAGSTER · ETL</span>
                   <span className="server-blade is-emerald" />
                   <span className="server-blade is-emerald" />
@@ -367,7 +523,9 @@ export function BedroomCorner({
                 </div>
               }
             />
-            {/* Rack 1: PostgreSQL 22M-Row Storage Tower */}
+            <ServerRackDoor y={134} isOpen={isRackDoorOpen('publications')} />
+
+            {/* Rack 3: PostgreSQL 22M-Row Storage Tower */}
             <IsoBox
               x={464}
               y={204}
@@ -377,7 +535,7 @@ export function BedroomCorner({
               h={112}
               className="box-server-rack"
               leftContent={
-                <div className="server-rack-face">
+                <div className="server-rack-face is-bay-interior">
                   <span className="rack-label">PGSQL · 22M</span>
                   <span className="server-blade is-emerald" />
                   <span className="server-blade is-cyan" />
@@ -386,7 +544,9 @@ export function BedroomCorner({
                 </div>
               }
             />
-            {/* Rack 2 (Contact Target): Local 32B LLM & ChromaDB Vector Tower */}
+            <ServerRackDoor y={204} isOpen={false} />
+
+            {/* Rack 4 (Contact Target): Local 32B LLM & ChromaDB Vector Tower */}
             <IsoBox
               x={464}
               y={274}
@@ -394,9 +554,9 @@ export function BedroomCorner({
               w={52}
               d={58}
               h={112}
-              className={`box-server-rack ${isContactActive ? 'is-rack-active' : ''}`}
+              className={`box-server-rack ${isContactActive || isRackBusy('contact') ? 'is-rack-active' : ''}`}
               leftContent={
-                <div className="server-rack-face">
+                <div className="server-rack-face is-bay-interior">
                   <span className="rack-label">32B LLM · RAG</span>
                   <span className="server-blade is-cyan" />
                   <span className="server-blade is-emerald" />
@@ -405,6 +565,7 @@ export function BedroomCorner({
                 </div>
               }
             />
+            <ServerRackDoor y={274} isOpen={isRackDoorOpen('contact')} />
 
             {/* Glowing Fiber-Optic Wires Connecting Server Racks to Pipeline Screen & Desk Server Box */}
             <div className="server-wire server-wire-floor-1" aria-hidden="true" />
@@ -573,20 +734,24 @@ export function BedroomCorner({
             {/* Desk + Clickable PC Setup */}
             <DeskSetup
               profile={profile}
-              isHovered={isExperienceActive}
-              isZoneHighlighted={isExperienceActive}
+              isHovered={isExperienceActive || isRackBusy('experience')}
+              isZoneHighlighted={isExperienceActive || isRackBusy('experience')}
               previewBook={hoveredBook ?? null}
               onHoverChange={(active) => {
                 setHoveredBookId(null);
                 setHoveredPc(active);
               }}
-              onOpenPc={() => {
-                if (experienceBooks[0]) onSelectBook(experienceBooks[0]);
-              }}
+              onOpenPc={() => handleRackClick('experience')}
             />
 
             {/* Animated Isometric Character */}
-            <RoomCharacter walkTarget={walkTarget} />
+            <RoomCharacter
+              walkTarget={walkTarget}
+              scriptedAction={rackAction}
+              isActionActive={isAnyRackBusy}
+              onScriptedArrive={handleScriptedArrive}
+              onAutoRackDoorChange={setAutoOpenRack}
+            />
           </div>
 
           {/* Callout Labels Positioned Just Outside/Along Room Boundary */}
@@ -594,14 +759,12 @@ export function BedroomCorner({
             {/* 1. Key Projects Callout (Above Back-Left Wall) */}
             <button
               type="button"
-              className={`room-callout callout-projects ${isProjectsActive ? 'is-active' : ''}`}
+              className={`room-callout callout-projects ${isProjectsActive || isRackBusy('projects') ? 'is-active' : ''}`}
               onMouseEnter={() => setHoveredCallout('projects')}
               onMouseLeave={() => setHoveredCallout(null)}
               onFocus={() => setHoveredCallout('projects')}
               onBlur={() => setHoveredCallout(null)}
-              onClick={() => {
-                if (projectBooks[0]) onSelectBook(projectBooks[0]);
-              }}
+              onClick={() => handleRackClick('projects')}
             >
               <span className="callout-card">
                 <span className="callout-dot pin-dot-cobalt" aria-hidden="true" />
@@ -616,7 +779,7 @@ export function BedroomCorner({
             {/* 2. Work Experience Callout (Desk PC) */}
             <button
               type="button"
-              className={`room-callout callout-experience ${isExperienceActive ? 'is-active' : ''}`}
+              className={`room-callout callout-experience ${isExperienceActive || isRackBusy('experience') ? 'is-active' : ''}`}
               onMouseEnter={() => {
                 setHoveredCallout('experience');
                 setHoveredPc(true);
@@ -633,9 +796,7 @@ export function BedroomCorner({
                 setHoveredCallout(null);
                 setHoveredPc(false);
               }}
-              onClick={() => {
-                if (experienceBooks[0]) onSelectBook(experienceBooks[0]);
-              }}
+              onClick={() => handleRackClick('experience')}
             >
               <span className="callout-card">
                 <span className="callout-dot pin-dot-teal" aria-hidden="true" />
@@ -650,12 +811,12 @@ export function BedroomCorner({
             {/* 3. Tech Stack Callout (Holotable) */}
             <button
               type="button"
-              className={`room-callout callout-skills ${isSkillsActive ? 'is-active' : ''}`}
+              className={`room-callout callout-skills ${isSkillsActive || isRackBusy('skills') ? 'is-active' : ''}`}
               onMouseEnter={() => setHoveredCallout('skills')}
               onMouseLeave={() => setHoveredCallout(null)}
               onFocus={() => setHoveredCallout('skills')}
               onBlur={() => setHoveredCallout(null)}
-              onClick={() => onOpenSection('skills')}
+              onClick={() => handleRackClick('skills')}
             >
               <span className="callout-card">
                 <span className="callout-dot pin-dot-sky" aria-hidden="true" />
@@ -670,12 +831,12 @@ export function BedroomCorner({
             {/* 4. Education Callout (Rack 1) */}
             <button
               type="button"
-              className={`room-callout callout-education ${isEducationActive ? 'is-active' : ''}`}
+              className={`room-callout callout-education ${isEducationActive || isRackBusy('education') ? 'is-active' : ''}`}
               onMouseEnter={() => setHoveredCallout('education')}
               onMouseLeave={() => setHoveredCallout(null)}
               onFocus={() => setHoveredCallout('education')}
               onBlur={() => setHoveredCallout(null)}
-              onClick={() => onOpenSection('education')}
+              onClick={() => handleRackClick('education')}
             >
               <span className="callout-card">
                 <span className="callout-dot pin-dot-indigo" aria-hidden="true" />
@@ -690,12 +851,12 @@ export function BedroomCorner({
             {/* 5. Academic Publications Callout (Rack 2) */}
             <button
               type="button"
-              className={`room-callout callout-publications ${isPublicationsActive ? 'is-active' : ''}`}
+              className={`room-callout callout-publications ${isPublicationsActive || isRackBusy('publications') ? 'is-active' : ''}`}
               onMouseEnter={() => setHoveredCallout('publications')}
               onMouseLeave={() => setHoveredCallout(null)}
               onFocus={() => setHoveredCallout('publications')}
               onBlur={() => setHoveredCallout(null)}
-              onClick={() => onOpenSection('publications')}
+              onClick={() => handleRackClick('publications')}
             >
               <span className="callout-card">
                 <span className="callout-dot pin-dot-violet" aria-hidden="true" />
@@ -710,12 +871,12 @@ export function BedroomCorner({
             {/* 6. Contact & References (Rack 4) */}
             <button
               type="button"
-              className={`room-callout callout-contact ${isContactActive ? 'is-active' : ''}`}
+              className={`room-callout callout-contact ${isContactActive || isRackBusy('contact') ? 'is-active' : ''}`}
               onMouseEnter={() => setHoveredCallout('contact')}
               onMouseLeave={() => setHoveredCallout(null)}
               onFocus={() => setHoveredCallout('contact')}
               onBlur={() => setHoveredCallout(null)}
-              onClick={() => onOpenSection('contact')}
+              onClick={() => handleRackClick('contact')}
             >
               <span className="callout-card">
                 <span className="callout-dot pin-dot-mint" aria-hidden="true" />

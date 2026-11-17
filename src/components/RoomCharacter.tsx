@@ -4,11 +4,15 @@ import { IsoBox } from './IsoBox';
 
 export type { RoomPoint };
 
+export type AutonomousRack = 'education' | 'publications' | 'contact';
+
 export type CharacterActivity =
   | 'desktop'
   | 'bookshelf'
   | 'coffee_table'
-  | 'bed'
+  | 'rack_education'
+  | 'rack_publications'
+  | 'rack_contact'
   | 'window';
 
 type CharacterPhase =
@@ -16,25 +20,43 @@ type CharacterPhase =
   | 'walking_to_target'
   | 'walking_to_custom'
   | 'custom_idle'
+  | 'walking_to_action'
+  | 'action_hold'
   | 'returning_to_last';
 
 export interface WalkTarget extends RoomPoint {
   seq: number;
 }
 
+export interface ScriptedAction extends RoomPoint {
+  faceYawDeg: number;
+  seq: number;
+  holdPose?: CharacterActivity;
+}
+
 const ACTIVITIES: readonly CharacterActivity[] = [
   'desktop',
   'bookshelf',
   'coffee_table',
-  'bed',
+  'rack_education',
+  'rack_publications',
+  'rack_contact',
   'window',
 ];
+
+const RACK_ACTIVITY_MAP: Partial<Record<CharacterActivity, AutonomousRack>> = {
+  rack_education: 'education',
+  rack_publications: 'publications',
+  rack_contact: 'contact',
+};
 
 const STAND_POS: Record<CharacterActivity, RoomPoint> = {
   desktop: { x: 162, y: 136 },
   bookshelf: { x: 406, y: 68 },
   coffee_table: { x: 280, y: 264 },
-  bed: { x: 344, y: 268 },
+  rack_education: { x: 422, y: 94 },
+  rack_publications: { x: 422, y: 164 },
+  rack_contact: { x: 422, y: 304 },
   window: { x: 426, y: 112 },
 };
 
@@ -42,7 +64,9 @@ const PERFORM_POS: Record<CharacterActivity, RoomPoint> = {
   desktop: { x: 116, y: 126 },
   bookshelf: { x: 406, y: 66 },
   coffee_table: { x: 274, y: 264 },
-  bed: { x: 350, y: 268 },
+  rack_education: { x: 422, y: 94 },
+  rack_publications: { x: 422, y: 164 },
+  rack_contact: { x: 422, y: 304 },
   window: { x: 426, y: 112 },
 };
 
@@ -161,9 +185,19 @@ function StandingLegs() {
 
 interface RoomCharacterProps {
   walkTarget?: WalkTarget | null;
+  scriptedAction?: ScriptedAction | null;
+  isActionActive?: boolean;
+  onScriptedArrive?: (seq: number) => void;
+  onAutoRackDoorChange?: (rack: AutonomousRack | null) => void;
 }
 
-export function RoomCharacter({ walkTarget = null }: RoomCharacterProps) {
+export function RoomCharacter({
+  walkTarget = null,
+  scriptedAction = null,
+  isActionActive = false,
+  onScriptedArrive,
+  onAutoRackDoorChange,
+}: RoomCharacterProps) {
   const [activity, setActivity] = useState<CharacterActivity>('window');
   const [targetActivity, setTargetActivity] =
     useState<CharacterActivity>('window');
@@ -176,7 +210,13 @@ export function RoomCharacter({ walkTarget = null }: RoomCharacterProps) {
   const currentPosRef = useRef<RoomPoint>(STAND_POS.window);
   const lastActivityRef = useRef<CharacterActivity>('window');
   const customDestRef = useRef<RoomPoint>(STAND_POS.window);
+  const actionDestRef = useRef<ScriptedAction | null>(null);
   const handledSeqRef = useRef<number>(0);
+  const handledActionSeqRef = useRef<number>(0);
+  const onScriptedArriveRef = useRef(onScriptedArrive);
+  onScriptedArriveRef.current = onScriptedArrive;
+  const onAutoRackDoorChangeRef = useRef(onAutoRackDoorChange);
+  onAutoRackDoorChangeRef.current = onAutoRackDoorChange;
   const yawRef = useRef<number>(-90);
   const segStartRef = useRef<RoomPoint>(STAND_POS.window);
   const segEndRef = useRef<RoomPoint>(STAND_POS.window);
@@ -193,11 +233,8 @@ export function RoomCharacter({ walkTarget = null }: RoomCharacterProps) {
     };
   };
 
-  // Handle user click-to-move anywhere on the walkable floor
-  useEffect(() => {
-    if (!walkTarget) return;
-    handledSeqRef.current = walkTarget.seq;
-
+  const syncStartForInterrupt = () => {
+    onAutoRackDoorChangeRef.current?.(null);
     if (phase === 'performing') {
       lastActivityRef.current = activity;
       const startPt = STAND_POS[activity];
@@ -210,28 +247,77 @@ export function RoomCharacter({ walkTarget = null }: RoomCharacterProps) {
       currentPosRef.current = live;
       setWalkDurationMs(0);
       setWalkPos(live);
-    } else if (phase === 'walking_to_custom' || phase === 'returning_to_last') {
+    } else if (
+      phase === 'walking_to_custom' ||
+      phase === 'walking_to_action' ||
+      phase === 'returning_to_last'
+    ) {
       const live = getLivePos();
       currentPosRef.current = live;
       setWalkDurationMs(0);
       setWalkPos(live);
+    } else if (phase === 'action_hold' && actionDestRef.current?.holdPose) {
+      const startPt = STAND_POS[actionDestRef.current.holdPose];
+      currentPosRef.current = startPt;
+      setWalkDurationMs(0);
+      setWalkPos(startPt);
     } else {
       setWalkDurationMs(0);
     }
+  };
 
+  // Handle user click-to-move anywhere on the walkable floor
+  useEffect(() => {
+    if (!walkTarget) return;
+    handledSeqRef.current = walkTarget.seq;
+    syncStartForInterrupt();
     customDestRef.current = { x: walkTarget.x, y: walkTarget.y };
     setPhase('walking_to_custom');
   }, [walkTarget]);
 
+  // Handle scripted section interaction (e.g. walk to Education server block)
+  useEffect(() => {
+    if (!scriptedAction) return;
+    handledActionSeqRef.current = scriptedAction.seq;
+    syncStartForInterrupt();
+    actionDestRef.current = scriptedAction;
+    setPhase('walking_to_action');
+  }, [scriptedAction]);
+
+  // When scripted interaction completes (e.g. door closed or modal closed), return to last activity
+  useEffect(() => {
+    if (phase === 'action_hold' && !isActionActive) {
+      const holdPose = actionDestRef.current?.holdPose;
+      if (holdPose) {
+        const standPt = STAND_POS[holdPose];
+        currentPosRef.current = standPt;
+        setWalkDurationMs(0);
+        setWalkPos(standPt);
+      }
+      setPhase('returning_to_last');
+    }
+  }, [phase, isActionActive]);
+
   useEffect(() => {
     if (phase === 'performing') {
-      if (walkTarget && walkTarget.seq === handledSeqRef.current) return;
+      if (
+        (walkTarget && walkTarget.seq === handledSeqRef.current) ||
+        (scriptedAction && scriptedAction.seq === handledActionSeqRef.current)
+      ) {
+        return;
+      }
       lastActivityRef.current = activity;
       currentPosRef.current = PERFORM_POS[activity];
       segDurationRef.current = 0;
+
+      const openRack = RACK_ACTIVITY_MAP[activity] ?? null;
+      onAutoRackDoorChangeRef.current?.(openRack);
+
       const dwellMs =
         MIN_DWELL_MS + Math.random() * (MAX_DWELL_MS - MIN_DWELL_MS);
-      const timerId = window.setTimeout(() => {
+      let closeTimerId = 0;
+
+      const startNextWalk = () => {
         const candidates = ACTIVITIES.filter((item) => item !== activity);
         const next = candidates[Math.floor(Math.random() * candidates.length)];
         setTargetActivity(next);
@@ -239,9 +325,21 @@ export function RoomCharacter({ walkTarget = null }: RoomCharacterProps) {
         setWalkDurationMs(0);
         setWalkPos(STAND_POS[activity]);
         setPhase('walking_to_target');
+      };
+
+      const dwellTimerId = window.setTimeout(() => {
+        if (openRack) {
+          onAutoRackDoorChangeRef.current?.(null);
+          closeTimerId = window.setTimeout(startNextWalk, 520);
+        } else {
+          startNextWalk();
+        }
       }, dwellMs);
 
-      return () => window.clearTimeout(timerId);
+      return () => {
+        window.clearTimeout(dwellTimerId);
+        if (closeTimerId) window.clearTimeout(closeTimerId);
+      };
     }
 
     if (phase === 'custom_idle') {
@@ -253,6 +351,11 @@ export function RoomCharacter({ walkTarget = null }: RoomCharacterProps) {
       return () => window.clearTimeout(timerId);
     }
 
+    if (phase === 'action_hold') {
+      segDurationRef.current = 0;
+      return;
+    }
+
     // Shared multi-waypoint obstacle-avoiding path runner
     let destination: RoomPoint;
     let onArrival: () => void;
@@ -260,6 +363,16 @@ export function RoomCharacter({ walkTarget = null }: RoomCharacterProps) {
     if (phase === 'walking_to_custom') {
       destination = customDestRef.current;
       onArrival = () => setPhase('custom_idle');
+    } else if (phase === 'walking_to_action' && actionDestRef.current) {
+      const action = actionDestRef.current;
+      destination = { x: action.x, y: action.y };
+      onArrival = () => {
+        const yaw = getShortestAngle(yawRef.current, action.faceYawDeg);
+        yawRef.current = yaw;
+        setWalkYawDeg(yaw);
+        setPhase('action_hold');
+        onScriptedArriveRef.current?.(action.seq);
+      };
     } else if (phase === 'returning_to_last') {
       const lastAct = lastActivityRef.current;
       destination = STAND_POS[lastAct];
@@ -332,14 +445,18 @@ export function RoomCharacter({ walkTarget = null }: RoomCharacterProps) {
       if (rafInnerId) window.cancelAnimationFrame(rafInnerId);
       if (timerId) window.clearTimeout(timerId);
     };
-  }, [phase, activity, targetActivity, walkTarget?.seq]);
+  }, [phase, activity, targetActivity, walkTarget?.seq, scriptedAction?.seq]);
 
+  const holdPose = phase === 'action_hold' ? actionDestRef.current?.holdPose : undefined;
   const isWalking =
     phase === 'walking_to_target' ||
     phase === 'walking_to_custom' ||
+    phase === 'walking_to_action' ||
     phase === 'returning_to_last';
-  const isCustomIdle = phase === 'custom_idle';
-  const anchorPos = isWalking || isCustomIdle ? walkPos : PERFORM_POS[activity];
+  const isCustomIdle =
+    (phase === 'custom_idle' || phase === 'action_hold') && !holdPose;
+  const displayActivity = holdPose ?? activity;
+  const anchorPos = isWalking || isCustomIdle ? walkPos : PERFORM_POS[displayActivity];
   const charStyle = {
     '--char-x': `${anchorPos.x}px`,
     '--char-y': `${anchorPos.y}px`,
@@ -350,9 +467,13 @@ export function RoomCharacter({ walkTarget = null }: RoomCharacterProps) {
 
   return (
     <div
-      key={isWalking || isCustomIdle ? 'dynamic-rig' : `perform-${activity}`}
+      key={isWalking || isCustomIdle ? 'dynamic-rig' : `perform-${displayActivity}`}
       className={`iso-character ${
-        isWalking ? 'is-walking' : isCustomIdle ? 'is-custom-idle' : `is-${activity}`
+        isWalking
+          ? 'is-walking'
+          : isCustomIdle
+            ? 'is-custom-idle'
+            : `is-${displayActivity}`
       }`}
       style={charStyle}
       aria-hidden="true"
@@ -386,7 +507,7 @@ export function RoomCharacter({ walkTarget = null }: RoomCharacterProps) {
         </div>
       )}
 
-      {!isWalking && !isCustomIdle && activity === 'desktop' && (
+      {!isWalking && !isCustomIdle && displayActivity === 'desktop' && (
         <div className="char-pose-back">
           <CharBox x={-12} y={-5} z={37} w={24} d={22} h={9} className="box-char-pants" />
           <CharBox x={-10} y={9} z={7} w={8} d={8} h={30} className="box-char-pants" />
@@ -409,7 +530,7 @@ export function RoomCharacter({ walkTarget = null }: RoomCharacterProps) {
         </div>
       )}
 
-      {!isWalking && !isCustomIdle && activity === 'bookshelf' && (
+      {!isWalking && !isCustomIdle && displayActivity === 'bookshelf' && (
         <div className="char-pose-north">
           <div className="char-shadow" />
           <StandingLegs />
@@ -428,7 +549,7 @@ export function RoomCharacter({ walkTarget = null }: RoomCharacterProps) {
         </div>
       )}
 
-      {!isWalking && !isCustomIdle && activity === 'coffee_table' && (
+      {!isWalking && !isCustomIdle && displayActivity === 'coffee_table' && (
         <div className="char-pose-west">
           <div className="char-shadow" />
           <StandingLegs />
@@ -445,7 +566,11 @@ export function RoomCharacter({ walkTarget = null }: RoomCharacterProps) {
         </div>
       )}
 
-      {!isWalking && !isCustomIdle && activity === 'bed' && (
+      {!isWalking &&
+        !isCustomIdle &&
+        (displayActivity === 'rack_education' ||
+          displayActivity === 'rack_publications' ||
+          displayActivity === 'rack_contact') && (
         <div className="char-pose-east">
           <div className="char-shadow" />
           <StandingLegs />
@@ -463,7 +588,7 @@ export function RoomCharacter({ walkTarget = null }: RoomCharacterProps) {
         </div>
       )}
 
-      {!isWalking && !isCustomIdle && activity === 'window' && (
+      {!isWalking && !isCustomIdle && displayActivity === 'window' && (
         <>
           <div className="char-pose-east">
             <div className="char-shadow" />
