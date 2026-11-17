@@ -40,6 +40,7 @@ export interface ReferenceEntry {
 export interface ProfileData {
   name: string;
   shortName: string;
+  avatarUrl?: string;
   role: string;
   email: string;
   phone: string;

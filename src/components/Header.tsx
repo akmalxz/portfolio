@@ -50,32 +50,33 @@ export function Header({ profile }: HeaderProps) {
     return () => window.removeEventListener('storage', handleStorage);
   }, []);
 
+  const avatarUrl = profile.avatarUrl?.trim() ?? '';
+  const initials = profile.shortName
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0]?.toUpperCase() ?? '')
+    .join('');
+
   return (
     <header className="corner-header">
       <div className="header-identity">
-        <h1 id="main-content" tabIndex={-1} className="corner-title">
-          {profile.name}
-        </h1>
-        <p className="corner-role">
-          <span className="role-dot" aria-hidden="true" />
-          <span>{profile.role}</span>
-        </p>
-      </div>
-
-      <div className="header-telemetry" aria-label="Core engineering metrics">
-        <span className="telemetry-pill">
-          <span className="telemetry-led" aria-hidden="true" />
-          <span>22M+ PGSQL ROWS</span>
-        </span>
-        <span className="telemetry-pill">
-          <span>&lt;300ms FASTAPI</span>
-        </span>
-        <span className="telemetry-pill">
-          <span>95% DAGSTER SLA</span>
-        </span>
-        <span className="telemetry-pill">
-          <span>32B LOCAL RAG</span>
-        </span>
+        <div className="header-avatar" aria-hidden={avatarUrl ? undefined : 'true'}>
+          {avatarUrl ? (
+            <img className="header-avatar-img" src={avatarUrl} alt={profile.name} />
+          ) : (
+            <span className="header-avatar-fallback">{initials}</span>
+          )}
+        </div>
+        <div className="header-identity-text">
+          <h1 id="main-content" tabIndex={-1} className="corner-title">
+            {profile.name}
+          </h1>
+          <p className="corner-role">
+            <span className="role-dot" aria-hidden="true" />
+            <span>{profile.role}</span>
+          </p>
+        </div>
       </div>
 
       <div className="header-actions">
